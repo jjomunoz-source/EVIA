@@ -1,0 +1,22 @@
+{
+  "name": "EVIA - Electromovilidad simple para Chile",
+  "short_name": "EVIA",
+  "description": "Guía simple para entender, cargar y cuidar tu vehículo eléctrico en Chile.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f5",
+  "theme_color": "#111820",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

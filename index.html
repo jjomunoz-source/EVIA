@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111820" />
+  <meta name="description" content="EVIA: guía simple para entender, cargar y cuidar tu vehículo eléctrico en Chile." />
+  <title>EVIA | Electromovilidad simple para Chile</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Logo EVIA" class="brand-logo" />
+        <div>
+          <h1>EVIA</h1>
+          <p>Electromovilidad simple para Chile</p>
+        </div>
+      </div>
+      <button id="installBtn" class="install-btn hidden">Instalar</button>
+    </header>
+
+    <main>
+      <section id="home" class="screen active">
+        <section class="hero-eva">
+          <div class="hero-copy">
+            <span class="pill">Guía EV Chile</span>
+            <h2>Entiende, carga y cuida tu vehículo eléctrico sin complicarte.</h2>
+            <p>Con la guía de Eva, la cara visible de EVIA, aprende electromovilidad de forma simple, segura y pensada para Chile.</p>
+          </div>
+
+          <div class="eva-frame">
+            <img src="assets/eva.png" alt="Eva, guía oficial de EVIA" class="eva-img" />
+            <div class="eva-badge">
+              <strong>Eva</strong>
+              <span>Tu guía EV</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="eva-intro">
+          <span class="mini-label">Hola, soy Eva</span>
+          <h3>Tu guía para entender la electromovilidad en Chile.</h3>
+          <p>Te acompaño con consejos claros sobre batería, carga, seguridad, costos y rutas, sin tecnicismos innecesarios.</p>
+        </section>
+
+        <section class="quick-grid">
+          <button class="module-card" data-target="battery"><span>🔋</span><strong>Batería y vida útil</strong><small>Cuida tu batería y evita malos hábitos.</small></button>
+          <button class="module-card" data-target="safety"><span>🌧️</span><strong>Seguridad al cargar</strong><small>Resuelve dudas como cargar con lluvia.</small></button>
+          <button class="module-card" data-target="chargingTypes"><span>⚡</span><strong>Tipos de carga</strong><small>Lenta, rápida, AC, DC, kW y kWh.</small></button>
+          <button class="module-card featured" data-target="calculator"><span>💰</span><strong>Calculadora de costo</strong><small>Calcula cuánto cuesta cargar tu EV.</small></button>
+          <button class="module-card" data-target="chargers"><span>📍</span><strong>Mapa de cargadores</strong><small>Accesos rápidos a redes y mapas.</small></button>
+          <button class="module-card" data-target="homeCharging"><span>🏠</span><strong>Carga en casa</strong><small>Wallbox, enchufes y revisión eléctrica.</small></button>
+        </section>
+
+        <section class="tip-card eva-tip">
+          <div class="tip-avatar"><img src="assets/eva.png" alt="Eva" /></div>
+          <div>
+            <h3>Consejo de Eva</h3>
+            <p>Para uso diario, evita cargar siempre al 100%. Mantener la batería entre 20% y 80% puede ayudar a cuidar su vida útil.</p>
+          </div>
+        </section>
+
+        <section class="social-card">
+          <span class="mini-label">EVIA en redes</span>
+          <h3>Sigue a Eva para aprender electromovilidad en simple.</h3>
+          <p>Tips cortos, mitos, seguridad, costos de carga y consejos para usuarios de vehículos eléctricos en Chile.</p>
+          <div class="social-buttons">
+            <a href="https://www.instagram.com/eviaapp" target="_blank" rel="noopener" aria-label="Instagram EVIA">Instagram</a>
+            <a href="https://www.tiktok.com/@eviaapp" target="_blank" rel="noopener" aria-label="TikTok EVIA">TikTok</a>
+            <a href="https://www.youtube.com/@Evia-APP" target="_blank" rel="noopener" aria-label="YouTube EVIA">YouTube</a>
+          </div>
+          <small class="social-note">Instagram @eviapp · TikTok @eviaapp · YouTube @Evia-APP</small>
+        </section>
+      </section>
+
+      <section id="battery" class="screen">
+        <button class="back-btn" data-target="home">← Volver</button>
+        <h2>🔋 Batería y vida útil</h2>
+        <p class="lead">La batería es una de las mayores preocupaciones al comprar o usar un vehículo eléctrico.</p>
+        <div class="content-card"><h3>¿Cuánto dura realmente?</h3><p>Una batería bien cuidada puede durar muchos años. Lo importante es entender que no “muere” de un día para otro: va perdiendo capacidad lentamente con el uso.</p></div>
+        <div class="content-card"><h3>Hábitos que ayudan</h3><ul><li>Usa rangos intermedios de carga para el día a día.</li><li>Evita dejarla constantemente bajo 10%.</li><li>Carga al 100% principalmente antes de viajes largos.</li><li>No abuses de la carga rápida si no es necesario.</li><li>Evita dejar el vehículo mucho tiempo detenido con batería muy baja.</li></ul></div>
+        <div class="content-card accent"><h3>Regla simple EVIA</h3><p>Para uso diario, intenta moverte entre 20% y 80%. Para viajes largos, cargar al 100% sí puede tener sentido.</p></div>
+      </section>
+
+      <section id="safety" class="screen">
+        <button class="back-btn" data-target="home">← Volver</button>
+        <h2>🌧️ Seguridad al cargar</h2>
+        <p class="lead">Una de las dudas más comunes es si se puede cargar un auto eléctrico cuando llueve.</p>
+        <div class="content-card"><h3>¿Se puede cargar con lluvia?</h3><p>Sí, siempre que el cargador, el cable y el conector estén en buen estado. Los vehículos eléctricos y cargadores están diseñados para operar de forma segura.</p></div>
+        <div class="content-card"><h3>Antes de conectar, revisa</h3><ul class="check-list"><li>Cable sin cortes ni daño visible.</li><li>Conector limpio y firme.</li><li>Cargador certificado o de red conocida.</li><li>Sin adaptadores improvisados.</li><li>Sin agua acumulada en enchufes o conectores.</li></ul></div>
+        <div class="warning-card"><h3>Evita esto</h3><p>No uses alargadores domésticos improvisados ni cargues si notas olor, calor excesivo, chispas, humedad dentro del conector o daño visible.</p></div>
+      </section>
+
+      <section id="chargingTypes" class="screen">
+        <button class="back-btn" data-target="home">← Volver</button>
+        <h2>⚡ Tipos de carga</h2>
+        <p class="lead">La confusión más común está entre kW, kWh, carga lenta y carga rápida.</p>
+        <div class="content-card"><h3>Explicación simple</h3><p><strong>kW</strong> = velocidad de carga.</p><p><strong>kWh</strong> = energía cargada o tamaño de la batería.</p></div>
+        <div class="type-grid"><div class="type-card"><h3>Carga lenta</h3><p>Ideal para casa, noche o uso diario.</p></div><div class="type-card"><h3>Carga semi rápida</h3><p>Útil en estacionamientos, oficinas o centros comerciales.</p></div><div class="type-card"><h3>Carga rápida</h3><p>Buena para viajes, emergencias o rutas largas.</p></div><div class="type-card"><h3>Carga ultra rápida</h3><p>Reduce tiempos, pero no siempre es necesaria para el día a día.</p></div></div>
+      </section>
+
+      <section id="calculator" class="screen">
+        <button class="back-btn" data-target="home">← Volver</button>
+        <h2>💰 Calculadora de costo de carga</h2>
+        <p class="lead">Calcula de forma aproximada cuánta energía necesitas y cuánto costaría cargar.</p>
+        <form id="chargeForm" class="form-card">
+          <label>Capacidad de batería del vehículo<input type="number" id="batteryCapacity" placeholder="Ej: 60" min="1" step="0.1" required /><small>En kWh</small></label>
+          <label>Porcentaje actual<input type="number" id="currentPercent" placeholder="Ej: 20" min="0" max="100" step="1" required /><small>Entre 0 y 100</small></label>
+          <label>Porcentaje objetivo<input type="number" id="targetPercent" placeholder="Ej: 80" min="1" max="100" step="1" required /><small>Entre 1 y 100</small></label>
+          <label>Precio por kWh<input type="number" id="priceKwh" placeholder="Ej: 180" min="1" step="1" required /><small>En pesos chilenos</small></label>
+          <button type="submit" class="primary-btn">Calcular</button>
+        </form>
+        <div id="calcResult" class="result-card hidden"></div>
+      </section>
+
+      <section id="chargers" class="screen">
+        <button class="back-btn" data-target="home">← Volver</button>
+        <h2>📍 Mapa rápido de cargadores</h2>
+        <p class="lead">Accede rápidamente a plataformas útiles para encontrar puntos de carga en Chile.</p>
+        <div class="link-grid">
+          <a href="https://energia.gob.cl/electromovilidad/ecocarga" target="_blank" rel="noopener">EcoCarga</a>
+          <a href="https://copecvoltex.cl/" target="_blank" rel="noopener">Copec Voltex</a>
+          <a href="https://www.enelx.com/cl/es" target="_blank" rel="noopener">Enel X</a>
+          <a href="https://www.google.com/maps/search/cargadores+electricos+cerca+de+mi" target="_blank" rel="noopener">Google Maps</a>
+          <a href="https://www.plugshare.com/" target="_blank" rel="noopener">PlugShare</a>
+          <a href="https://www.electromaps.com/" target="_blank" rel="noopener">Electromaps</a>
+        </div>
+        <div class="content-card accent"><h3>Futuro módulo EVIA</h3><p>Más adelante podremos agregar reportes comunitarios: disponible, ocupado, gratis, pagado, fuera de servicio o difícil de encontrar.</p></div>
+      </section>
+
+      <section id="homeCharging" class="screen">
+        <button class="back-btn" data-target="home">← Volver</button>
+        <h2>🏠 Carga en casa</h2>
+        <p class="lead">Cargar en casa suele ser lo más cómodo, pero debe hacerse de forma segura.</p>
+        <div class="content-card"><h3>Wallbox</h3><p>Es un cargador domiciliario dedicado. Suele ser más seguro, cómodo y eficiente que depender de enchufes comunes.</p></div>
+        <div class="content-card"><h3>Antes de instalar</h3><ul><li>Revisa la capacidad eléctrica de tu vivienda.</li><li>Consulta con un instalador autorizado.</li><li>Evita soluciones improvisadas.</li><li>Si vives en edificio, revisa permisos y factibilidad.</li></ul></div>
+        <div class="warning-card"><h3>Importante</h3><p>EVIA entrega orientación general. Para una instalación real, siempre consulta con un profesional eléctrico autorizado.</p></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-target="home">Inicio</button>
+      <button class="nav-btn" data-target="calculator">Costo</button>
+      <button class="nav-btn" data-target="chargers">Cargadores</button>
+    </nav>
+  </div>
+  <script src="app.js?v=4"></script>
+</body>
+</html>
