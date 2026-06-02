@@ -17,3 +17,13 @@
 .tip-avatar{width:68px;height:68px;border-radius:22px;overflow:hidden;background:var(--surface-dark);}.tip-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;}
 .social-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px;}.social-buttons a{text-align:center;text-decoration:none;background:var(--surface-dark);color:white;border-radius:999px;padding:12px 8px;font-size:.84rem;font-weight:800;}.social-note{display:block;color:var(--muted);margin-top:12px;}
 @media(min-width:700px){.app-shell{max-width:920px;}.hero-eva{grid-template-columns:1.05fr .95fr;align-items:center;}.hero-eva h2{font-size:2.25rem;}.eva-frame{min-height:390px;}.eva-img{min-height:390px;}.quick-grid{grid-template-columns:repeat(3,1fr);}.bottom-nav{max-width:520px;}}
+
+/* EVIA v3: calculadora ampliada y navegación más cómoda */
+.result-grid{display:grid;gap:12px;margin-top:12px;}
+.result-grid div{background:rgba(255,255,255,.72);border:1px solid rgba(50,230,138,.34);border-radius:16px;padding:14px;}
+.result-grid span{display:block;color:var(--muted);font-size:.86rem;font-weight:700;margin-bottom:6px;}
+.result-grid strong{display:block;font-size:1.1rem;}
+.result-advice{line-height:1.55;margin:16px 0 0;}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(18,184,106,.38);outline-offset:3px;}
+@media(max-width:699px){.app-shell{padding-bottom:126px;}.bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));}.module-card{min-height:148px;}}
+@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}}

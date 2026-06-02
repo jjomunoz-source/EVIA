@@ -1,1 +1,138 @@
-const screens=document.querySelectorAll('.screen');const navButtons=document.querySelectorAll('[data-target]');const bottomNavButtons=document.querySelectorAll('.nav-btn');const installBtn=document.getElementById('installBtn');let deferredPrompt=null;function showScreen(id){screens.forEach(screen=>screen.classList.toggle('active',screen.id===id));bottomNavButtons.forEach(btn=>btn.classList.toggle('active',btn.dataset.target===id));window.scrollTo({top:0,behavior:'smooth'})}navButtons.forEach(button=>{button.addEventListener('click',()=>{const target=button.dataset.target;if(target)showScreen(target)})});const chargeForm=document.getElementById('chargeForm');const calcResult=document.getElementById('calcResult');if(chargeForm){chargeForm.addEventListener('submit',(event)=>{event.preventDefault();const batteryCapacity=Number(document.getElementById('batteryCapacity').value);const currentPercent=Number(document.getElementById('currentPercent').value);const targetPercent=Number(document.getElementById('targetPercent').value);const priceKwh=Number(document.getElementById('priceKwh').value);if(!batteryCapacity||!priceKwh||currentPercent<0||targetPercent<=currentPercent||targetPercent>100){calcResult.classList.remove('hidden');calcResult.innerHTML='<h3>Revisa los datos</h3><p>El porcentaje objetivo debe ser mayor al porcentaje actual y no superar 100%.</p>';return}const energyNeeded=batteryCapacity*((targetPercent-currentPercent)/100);const estimatedCost=energyNeeded*priceKwh;let advice='Para uso diario, intenta mantener rangos intermedios de carga.';if(targetPercent>90){advice='Cargar sobre 90% puede ser útil antes de viajes largos, pero no siempre es necesario para el día a día.'}else if(targetPercent<=80){advice='Buen rango para uso diario. Cargar hasta 80% suele ser una práctica saludable para la batería.'}calcResult.classList.remove('hidden');calcResult.innerHTML=`<h3>Resultado estimado</h3><p>Energía necesaria:</p><strong>${energyNeeded.toFixed(1)} kWh</strong><p>Costo aproximado:</p><strong>$${Math.round(estimatedCost).toLocaleString('es-CL')} CLP</strong><p class='result-advice'>${advice}</p>`})}window.addEventListener('beforeinstallprompt',(event)=>{event.preventDefault();deferredPrompt=event;installBtn.classList.remove('hidden')});installBtn?.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.classList.add('hidden')});if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js?v=5').catch(error=>console.warn('Service worker no registrado:',error))})}
+const screens = document.querySelectorAll(".screen");
+const navButtons = document.querySelectorAll("[data-target]");
+const bottomNavButtons = document.querySelectorAll(".nav-btn");
+const installBtn = document.getElementById("installBtn");
+const validScreens = new Set(Array.from(screens).map((screen) => screen.id));
+let deferredPrompt = null;
+
+function showScreen(id, updateHash = true) {
+  const targetId = validScreens.has(id) ? id : "home";
+
+  screens.forEach((screen) => {
+    screen.classList.toggle("active", screen.id === targetId);
+  });
+
+  bottomNavButtons.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.target === targetId);
+  });
+
+  if (updateHash) {
+    const nextHash = targetId === "home" ? "#" : `#${targetId}`;
+    history.pushState(null, "", nextHash);
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showScreenFromHash() {
+  const id = window.location.hash.replace("#", "") || "home";
+  showScreen(id, false);
+}
+
+navButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = button.dataset.target;
+    if (target) showScreen(target);
+  });
+});
+
+window.addEventListener("hashchange", showScreenFromHash);
+showScreenFromHash();
+
+const chargeForm = document.getElementById("chargeForm");
+const calcResult = document.getElementById("calcResult");
+
+function formatClp(value) {
+  return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
+}
+
+function formatChargeTime(hours) {
+  const wholeHours = Math.floor(hours);
+  const minutes = Math.round((hours - wholeHours) * 60);
+
+  if (wholeHours === 0) return `${minutes} min aprox.`;
+  if (minutes === 0) return `${wholeHours} h aprox.`;
+  return `${wholeHours} h ${minutes} min aprox.`;
+}
+
+if (chargeForm) {
+  chargeForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const batteryCapacity = Number(document.getElementById("batteryCapacity").value);
+    const currentPercent = Number(document.getElementById("currentPercent").value);
+    const targetPercent = Number(document.getElementById("targetPercent").value);
+    const priceKwh = Number(document.getElementById("priceKwh").value);
+    const chargerPower = Number(document.getElementById("chargerPower").value);
+    const evConsumption = Number(document.getElementById("evConsumption").value);
+
+    if (
+      !batteryCapacity ||
+      !priceKwh ||
+      currentPercent < 0 ||
+      targetPercent <= currentPercent ||
+      targetPercent > 100
+    ) {
+      calcResult.classList.remove("hidden");
+      calcResult.innerHTML =
+        "<h3>Revisa los datos</h3><p>El porcentaje objetivo debe ser mayor al porcentaje actual y no superar 100%.</p>";
+      return;
+    }
+
+    const energyNeeded = batteryCapacity * ((targetPercent - currentPercent) / 100);
+    const estimatedCost = energyNeeded * priceKwh;
+    const timeEstimate = chargerPower > 0 ? formatChargeTime(energyNeeded / chargerPower) : null;
+    const costPer100Km = evConsumption > 0 ? evConsumption * priceKwh : null;
+
+    let advice = "Para uso diario, intenta mantener rangos intermedios de carga.";
+    if (targetPercent > 90) {
+      advice =
+        "Cargar sobre 90% puede ser útil antes de viajes largos, pero no siempre es necesario para el día a día.";
+    } else if (targetPercent <= 80) {
+      advice =
+        "Buen rango para uso diario. Cargar hasta 80% suele ser una práctica saludable para la batería.";
+    }
+
+    calcResult.classList.remove("hidden");
+    calcResult.innerHTML = `
+      <h3>Resultado estimado</h3>
+      <div class="result-grid">
+        <div><span>Energía necesaria</span><strong>${energyNeeded.toFixed(1)} kWh</strong></div>
+        <div><span>Costo aproximado</span><strong>${formatClp(estimatedCost)}</strong></div>
+        ${
+          timeEstimate
+            ? `<div><span>Tiempo de carga</span><strong>${timeEstimate}</strong></div>`
+            : ""
+        }
+        ${
+          costPer100Km
+            ? `<div><span>Costo por 100 km</span><strong>${formatClp(costPer100Km)}</strong></div>`
+            : ""
+        }
+      </div>
+      <p class="result-advice">${advice}</p>
+    `;
+  });
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  installBtn.classList.remove("hidden");
+});
+
+installBtn?.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.classList.add("hidden");
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("service-worker.js?v=6")
+      .catch((error) => console.warn("Service worker no registrado:", error));
+  });
+}
