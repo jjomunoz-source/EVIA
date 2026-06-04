@@ -25,5 +25,7 @@
 .result-grid strong{display:block;font-size:1.1rem;}
 .result-advice{line-height:1.55;margin:16px 0 0;}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(18,184,106,.38);outline-offset:3px;}
+.content-card .check-list{display:grid;gap:10px;padding-left:22px;margin:0;}
+.content-card .check-list li{line-height:1.45;}
 @media(max-width:699px){.app-shell{padding-bottom:126px;}.bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));}.module-card{min-height:148px;}}
 @media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}}
