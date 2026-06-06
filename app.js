@@ -65,6 +65,7 @@ if (chargeForm) {
     const priceKwh = Number(document.getElementById("priceKwh").value);
     const chargerPower = Number(document.getElementById("chargerPower").value);
     const evConsumption = Number(document.getElementById("evConsumption").value);
+    const monthlyKm = Number(document.getElementById("monthlyKm").value);
 
     if (
       !batteryCapacity ||
@@ -82,7 +83,11 @@ if (chargeForm) {
     const energyNeeded = batteryCapacity * ((targetPercent - currentPercent) / 100);
     const estimatedCost = energyNeeded * priceKwh;
     const timeEstimate = chargerPower > 0 ? formatChargeTime(energyNeeded / chargerPower) : null;
+    const addedRange = evConsumption > 0 ? (energyNeeded / evConsumption) * 100 : null;
     const costPer100Km = evConsumption > 0 ? evConsumption * priceKwh : null;
+    const monthlyEnergy =
+      evConsumption > 0 && monthlyKm > 0 ? (evConsumption * monthlyKm) / 100 : null;
+    const monthlyCost = monthlyEnergy ? monthlyEnergy * priceKwh : null;
 
     let advice = "Para uso diario, intenta mantener rangos intermedios de carga.";
     if (targetPercent > 90) {
@@ -97,16 +102,26 @@ if (chargeForm) {
     calcResult.innerHTML = `
       <h3>Resultado estimado</h3>
       <div class="result-grid">
-        <div><span>Energía necesaria</span><strong>${energyNeeded.toFixed(1)} kWh</strong></div>
-        <div><span>Costo aproximado</span><strong>${formatClp(estimatedCost)}</strong></div>
+        <div class="result-item"><span class="result-icon">⚡</span><div><span>Energía necesaria</span><strong>${energyNeeded.toFixed(1)} kWh</strong></div></div>
+        <div class="result-item"><span class="result-icon">💰</span><div><span>Costo de carga</span><strong>${formatClp(estimatedCost)}</strong></div></div>
         ${
           timeEstimate
-            ? `<div><span>Tiempo de carga</span><strong>${timeEstimate}</strong></div>`
+            ? `<div class="result-item"><span class="result-icon">⏱️</span><div><span>Tiempo estimado</span><strong>${timeEstimate}</strong></div></div>`
+            : ""
+        }
+        ${
+          addedRange
+            ? `<div class="result-item"><span class="result-icon">🚗</span><div><span>Autonomía agregada</span><strong>${Math.round(addedRange).toLocaleString("es-CL")} km aprox.</strong></div></div>`
             : ""
         }
         ${
           costPer100Km
-            ? `<div><span>Costo por 100 km</span><strong>${formatClp(costPer100Km)}</strong></div>`
+            ? `<div class="result-item"><span class="result-icon">📊</span><div><span>Costo por 100 km</span><strong>${formatClp(costPer100Km)}</strong></div></div>`
+            : ""
+        }
+        ${
+          monthlyCost && monthlyEnergy
+            ? `<div class="result-item result-item-monthly"><span class="result-icon">📅</span><div><span>Costo mensual</span><strong>${formatClp(monthlyCost)}</strong><small>${monthlyEnergy.toFixed(1)} kWh mensuales estimados</small></div></div>`
             : ""
         }
       </div>
@@ -132,7 +147,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=6")
+      .register("service-worker.js?v=8")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
