@@ -62,5 +62,24 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 .checklist-result small{color:var(--muted);font-weight:750;}
 .checklist-actions{display:grid;gap:10px;margin:16px 0;}
 .secondary-btn{border:1px solid var(--border);background:white;color:var(--text);padding:14px 16px;border-radius:999px;font-weight:850;cursor:pointer;}
+.first-steps-guide{display:grid;gap:12px;margin:16px 0;}
+.first-step-item{display:grid;grid-template-columns:28px 1fr;align-items:start;gap:12px;background:white;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 8px 22px rgba(17,24,32,.05);cursor:pointer;line-height:1.4;}
+.first-step-item.checked{background:#f1fff8;border-color:rgba(50,230,138,.75);}
+.first-step-item input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--green-dark);box-shadow:none;cursor:pointer;}
+.first-step-item span{display:grid;gap:6px;min-width:0;}
+.first-step-title{display:block;font-size:1rem;line-height:1.25;}
+.first-step-text{display:block;color:var(--muted);font-weight:550;line-height:1.45;}
+.first-steps-result{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:16px 0;}
+.first-steps-result.risk-low{background:#f1fff8;border-color:rgba(50,230,138,.75);}
+.first-steps-result.risk-medium{background:#fffaf0;border-color:rgba(255,200,87,.9);}
+.first-steps-result.risk-high{background:#fff6f5;border-color:rgba(230,78,78,.42);}
+.first-steps-result p{line-height:1.55;margin:0 0 14px;}
+.first-steps-progress{height:12px;background:rgba(17,24,32,.09);border-radius:999px;overflow:hidden;margin:12px 0 2px;}
+.first-steps-progress-bar{display:block;height:100%;border-radius:999px;transition:width .2s ease;}
+.first-steps-progress-bar.risk-low{background:var(--green-dark);}
+.first-steps-progress-bar.risk-medium{background:#ffc857;}
+.first-steps-progress-bar.risk-high{background:#e65a50;}
+.first-steps-actions,.quick-action-links{display:grid;gap:10px;margin:16px 0;}
+.quick-action-links .secondary-btn{text-align:center;}
 @media(max-width:699px){.app-shell{padding-bottom:126px;}.bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));}.module-card{min-height:148px;}}
-@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links{grid-template-columns:repeat(3,1fr);}}

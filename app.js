@@ -49,6 +49,11 @@ const usedChecklistResult = document.getElementById("usedChecklistResult");
 const saveUsedChecklistBtn = document.getElementById("saveUsedChecklist");
 const clearUsedChecklistBtn = document.getElementById("clearUsedChecklist");
 const usedChecklistStorageKey = "eviaUsedChecklist";
+const firstStepsForm = document.getElementById("firstStepsForm");
+const firstStepsResult = document.getElementById("firstStepsResult");
+const saveFirstStepsBtn = document.getElementById("saveFirstSteps");
+const resetFirstStepsBtn = document.getElementById("resetFirstSteps");
+const firstStepsStorageKey = "eviaFirstSteps";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -347,6 +352,108 @@ if (usedChecklistForm) {
   });
 }
 
+function getFirstStepsInputs() {
+  return Array.from(document.querySelectorAll("#firstStepsForm input[type='checkbox']"));
+}
+
+function getFirstStepsEvaluation(score) {
+  if (score >= 6) {
+    return {
+      riskClass: "risk-low",
+      statusText: "✅ Listo para avanzar",
+      message:
+        "Vas muy bien. Ya tienes los conocimientos básicos para usar mejor tu vehículo eléctrico y seguir aprendiendo con EVIA.",
+    };
+  }
+
+  if (score >= 3) {
+    return {
+      riskClass: "risk-medium",
+      statusText: "⚠️ Buen avance",
+      message:
+        "Ya tienes una base útil. Ahora refuerza costos, mapas de carga y planificación de viajes.",
+    };
+  }
+
+  return {
+    riskClass: "risk-high",
+    statusText: "🔴 Recién comenzando",
+    message:
+      "Todavía estás en la etapa inicial. Empieza por conocer tu autonomía real, tu conector y cómo cargar de forma segura.",
+  };
+}
+
+function updateFirstStepsGuide() {
+  if (!firstStepsForm || !firstStepsResult) return;
+
+  const inputs = getFirstStepsInputs();
+  const completedCount = inputs.filter((input) => input.checked).length;
+  const total = inputs.length;
+  const progress = total ? Math.round((completedCount / total) * 100) : 0;
+  const evaluation = getFirstStepsEvaluation(completedCount);
+
+  inputs.forEach((input) => {
+    input.closest(".first-step-item")?.classList.toggle("checked", input.checked);
+  });
+
+  firstStepsResult.classList.remove("risk-low", "risk-medium", "risk-high");
+  firstStepsResult.classList.add(evaluation.riskClass);
+  firstStepsResult.innerHTML = `
+    <div class="checklist-score">Has completado ${completedCount} de ${total} pasos</div>
+    <div class="checklist-risk">${evaluation.statusText}</div>
+    <p>${evaluation.message}</p>
+    <div class="first-steps-progress">
+      <span style="width:${progress}%" class="first-steps-progress-bar ${evaluation.riskClass}"></span>
+    </div>
+  `;
+}
+
+function saveFirstStepsGuide() {
+  const checkedKeys = getFirstStepsInputs()
+    .filter((input) => input.checked)
+    .map((input) => input.dataset.step);
+
+  localStorage.setItem(firstStepsStorageKey, JSON.stringify(checkedKeys));
+}
+
+function loadFirstStepsGuide() {
+  if (!firstStepsForm) return;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(firstStepsStorageKey)) || [];
+    const savedSet = new Set(saved);
+
+    getFirstStepsInputs().forEach((input) => {
+      input.checked = savedSet.has(input.dataset.step);
+    });
+  } catch (error) {
+    localStorage.removeItem(firstStepsStorageKey);
+  }
+
+  updateFirstStepsGuide();
+}
+
+if (firstStepsForm) {
+  loadFirstStepsGuide();
+
+  getFirstStepsInputs().forEach((input) => {
+    input.addEventListener("change", updateFirstStepsGuide);
+  });
+
+  saveFirstStepsBtn?.addEventListener("click", () => {
+    saveFirstStepsGuide();
+    updateFirstStepsGuide();
+  });
+
+  resetFirstStepsBtn?.addEventListener("click", () => {
+    getFirstStepsInputs().forEach((input) => {
+      input.checked = false;
+    });
+    localStorage.removeItem(firstStepsStorageKey);
+    updateFirstStepsGuide();
+  });
+}
+
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredPrompt = event;
@@ -364,7 +471,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=10")
+      .register("service-worker.js?v=11")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
