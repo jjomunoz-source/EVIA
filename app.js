@@ -41,6 +41,9 @@ showScreenFromHash();
 
 const chargeForm = document.getElementById("chargeForm");
 const calcResult = document.getElementById("calcResult");
+const tripForm = document.getElementById("tripForm");
+const tripResult = document.getElementById("tripResult");
+const tripStorageKey = "eviaTripPlannerLast";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -130,6 +133,112 @@ if (chargeForm) {
   });
 }
 
+function formatPercent(value) {
+  return `${value.toFixed(1)}%`;
+}
+
+function loadTripPlannerLast() {
+  if (!tripForm) return;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(tripStorageKey));
+    if (!saved) return;
+
+    Object.entries(saved).forEach(([id, value]) => {
+      const input = document.getElementById(id);
+      if (input && value !== undefined && value !== null) input.value = value;
+    });
+  } catch (error) {
+    localStorage.removeItem(tripStorageKey);
+  }
+}
+
+if (tripForm) {
+  loadTripPlannerLast();
+
+  tripForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const tripRange = Number(document.getElementById("tripRange").value);
+    const tripBatteryPercent = Number(document.getElementById("tripBatteryPercent").value);
+    const tripDistance = Number(document.getElementById("tripDistance").value);
+    const tripSafetyMargin = Number(document.getElementById("tripSafetyMargin").value || 0);
+
+    if (
+      tripRange <= 0 ||
+      tripBatteryPercent <= 0 ||
+      tripBatteryPercent > 100 ||
+      tripDistance <= 0 ||
+      tripSafetyMargin < 0 ||
+      tripSafetyMargin > 50
+    ) {
+      tripResult.classList.remove("hidden", "green", "yellow", "red");
+      tripResult.innerHTML =
+        "<h3>Revisa los datos ingresados</h3><p>La autonomía, porcentaje actual y distancia deben ser mayores a cero.</p>";
+      return;
+    }
+
+    const availableRange = tripRange * (tripBatteryPercent / 100);
+    const neededBattery = (tripDistance / tripRange) * 100;
+    const remainingBattery = tripBatteryPercent - neededBattery;
+    const remainingRange = tripRange * (remainingBattery / 100);
+    const safetyMarginKm = tripRange * (tripSafetyMargin / 100);
+
+    let statusClass = "red";
+    let statusText = "🔴 Necesitas cargar";
+    let message =
+      "Con la carga actual no alcanzarías a completar el viaje. Carga antes de salir o planifica una parada.";
+    let evaTip =
+      "Consejo de Eva: antes de salir, revisa cargadores disponibles y considera una parada intermedia.";
+
+    if (remainingBattery >= tripSafetyMargin) {
+      statusClass = "green";
+      statusText = "✅ Viaje posible";
+      message =
+        "Tu carga actual debería alcanzar para este viaje manteniendo el margen de seguridad indicado.";
+      evaTip =
+        "Consejo de Eva: aun cuando el viaje sea posible, revisa clima, velocidad y cargadores cercanos por si necesitas margen extra.";
+    } else if (remainingBattery >= 0) {
+      statusClass = "yellow";
+      statusText = "⚠️ Viaje justo";
+      message =
+        "Podrías llegar, pero con poco margen. Revisa cargadores en ruta o considera cargar antes de salir.";
+      evaTip =
+        "Consejo de Eva: si el resultado queda justo, cargar unos minutos antes de salir puede hacer el viaje mucho más tranquilo.";
+    }
+
+    localStorage.setItem(
+      tripStorageKey,
+      JSON.stringify({
+        tripRange,
+        tripBatteryPercent,
+        tripDistance,
+        tripSafetyMargin,
+      })
+    );
+
+    tripResult.classList.remove("hidden", "green", "yellow", "red");
+    tripResult.classList.add(statusClass);
+    tripResult.innerHTML = `
+      <div class="trip-status ${statusClass}">${statusText}</div>
+      <p>${message}</p>
+      <div class="result-grid">
+        <div class="result-item"><span class="result-icon">🔋</span><div><span>Autonomía disponible</span><strong>${Math.round(availableRange).toLocaleString("es-CL")} km aprox.</strong></div></div>
+        <div class="result-item"><span class="result-icon">🛣️</span><div><span>Distancia del viaje</span><strong>${Math.round(tripDistance).toLocaleString("es-CL")} km</strong></div></div>
+        <div class="result-item"><span class="result-icon">⚡</span><div><span>Batería necesaria</span><strong>${formatPercent(neededBattery)}</strong></div></div>
+        <div class="result-item"><span class="result-icon">📍</span><div><span>Batería al llegar</span><strong>${formatPercent(remainingBattery)}</strong></div></div>
+        <div class="result-item"><span class="result-icon">🚗</span><div><span>Autonomía restante</span><strong>${Math.max(0, Math.round(remainingRange)).toLocaleString("es-CL")} km aprox.</strong></div></div>
+        <div class="result-item"><span class="result-icon">🛡️</span><div><span>Margen de seguridad</span><strong>${Math.round(tripSafetyMargin)}%</strong><small>${Math.round(safetyMarginKm).toLocaleString("es-CL")} km reservados aprox.</small></div></div>
+      </div>
+      <p class="result-advice">${evaTip}</p>
+      <div class="action-links">
+        <a href="https://www.google.com/maps/search/?api=1&query=cargadores+electricos+cerca+de+mi" target="_blank" rel="noopener">Buscar ruta en Google Maps</a>
+        <a href="https://www.plugshare.com/" target="_blank" rel="noopener">Buscar cargadores en PlugShare</a>
+      </div>
+    `;
+  });
+}
+
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredPrompt = event;
@@ -147,7 +256,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=8")
+      .register("service-worker.js?v=9")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
