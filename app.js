@@ -44,6 +44,11 @@ const calcResult = document.getElementById("calcResult");
 const tripForm = document.getElementById("tripForm");
 const tripResult = document.getElementById("tripResult");
 const tripStorageKey = "eviaTripPlannerLast";
+const usedChecklistForm = document.getElementById("usedChecklistForm");
+const usedChecklistResult = document.getElementById("usedChecklistResult");
+const saveUsedChecklistBtn = document.getElementById("saveUsedChecklist");
+const clearUsedChecklistBtn = document.getElementById("clearUsedChecklist");
+const usedChecklistStorageKey = "eviaUsedChecklist";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -239,6 +244,109 @@ if (tripForm) {
   });
 }
 
+function getUsedChecklistInputs() {
+  return Array.from(document.querySelectorAll("#usedChecklistForm input[type='checkbox']"));
+}
+
+function getUsedChecklistEvaluation(score) {
+  if (score >= 8) {
+    return {
+      riskClass: "risk-low",
+      riskText: "✅ Riesgo bajo",
+      message:
+        "Vas bien. Aun así, antes de cerrar la compra, revisa documentos, garantía y diagnóstico final.",
+    };
+  }
+
+  if (score >= 5) {
+    return {
+      riskClass: "risk-medium",
+      riskText: "⚠️ Riesgo medio",
+      message:
+        "Todavía hay puntos importantes por revisar. No cierres la compra sin confirmar batería, garantía y soporte técnico.",
+    };
+  }
+
+  return {
+    riskClass: "risk-high",
+    riskText: "🔴 Riesgo alto",
+    message:
+      "Falta demasiada información. Comprar sin revisar estos puntos puede ser riesgoso, especialmente por el costo de la batería.",
+  };
+}
+
+function updateUsedChecklist() {
+  if (!usedChecklistForm || !usedChecklistResult) return;
+
+  const inputs = getUsedChecklistInputs();
+  const checkedCount = inputs.filter((input) => input.checked).length;
+  const total = inputs.length;
+  const progress = total ? Math.round((checkedCount / total) * 100) : 0;
+  const evaluation = getUsedChecklistEvaluation(checkedCount);
+
+  inputs.forEach((input) => {
+    input.closest(".checklist-item")?.classList.toggle("checked", input.checked);
+  });
+
+  usedChecklistResult.classList.remove("risk-low", "risk-medium", "risk-high");
+  usedChecklistResult.classList.add(evaluation.riskClass);
+  usedChecklistResult.innerHTML = `
+    <div class="checklist-score">Puntaje EVIA: ${checkedCount}/${total}</div>
+    <div class="checklist-risk">${evaluation.riskText}</div>
+    <p>${evaluation.message}</p>
+    <div class="checklist-progress">
+      <span style="width:${progress}%" class="checklist-progress-bar ${evaluation.riskClass}"></span>
+    </div>
+    <small>Has revisado ${checkedCount} de ${total} puntos</small>
+  `;
+}
+
+function saveUsedChecklist() {
+  const checkedKeys = getUsedChecklistInputs()
+    .filter((input) => input.checked)
+    .map((input) => input.dataset.check);
+
+  localStorage.setItem(usedChecklistStorageKey, JSON.stringify(checkedKeys));
+}
+
+function loadUsedChecklist() {
+  if (!usedChecklistForm) return;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(usedChecklistStorageKey)) || [];
+    const savedSet = new Set(saved);
+
+    getUsedChecklistInputs().forEach((input) => {
+      input.checked = savedSet.has(input.dataset.check);
+    });
+  } catch (error) {
+    localStorage.removeItem(usedChecklistStorageKey);
+  }
+
+  updateUsedChecklist();
+}
+
+if (usedChecklistForm) {
+  loadUsedChecklist();
+
+  getUsedChecklistInputs().forEach((input) => {
+    input.addEventListener("change", updateUsedChecklist);
+  });
+
+  saveUsedChecklistBtn?.addEventListener("click", () => {
+    saveUsedChecklist();
+    updateUsedChecklist();
+  });
+
+  clearUsedChecklistBtn?.addEventListener("click", () => {
+    getUsedChecklistInputs().forEach((input) => {
+      input.checked = false;
+    });
+    localStorage.removeItem(usedChecklistStorageKey);
+    updateUsedChecklist();
+  });
+}
+
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredPrompt = event;
@@ -256,7 +364,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=9")
+      .register("service-worker.js?v=10")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
