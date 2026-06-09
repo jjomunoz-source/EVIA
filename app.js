@@ -2,6 +2,7 @@ const screens = document.querySelectorAll(".screen");
 const navButtons = document.querySelectorAll("[data-target]");
 const bottomNavButtons = document.querySelectorAll(".nav-btn");
 const installBtn = document.getElementById("installBtn");
+const heroScrollButtons = document.querySelectorAll("[data-scroll-target]");
 const validScreens = new Set(Array.from(screens).map((screen) => screen.id));
 let deferredPrompt = null;
 
@@ -38,6 +39,13 @@ navButtons.forEach((button) => {
 
 window.addEventListener("hashchange", showScreenFromHash);
 showScreenFromHash();
+
+heroScrollButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const target = document.getElementById(button.dataset.scrollTarget);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
 
 const chargeForm = document.getElementById("chargeForm");
 const calcResult = document.getElementById("calcResult");
@@ -697,7 +705,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=15")
+      .register("service-worker.js?v=16")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
