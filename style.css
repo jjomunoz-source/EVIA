@@ -108,5 +108,24 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 .privacy-links span{color:var(--muted);font-weight:700;}
 .privacy-update{display:grid;gap:6px;background:var(--surface-dark);color:white;border-radius:var(--radius);padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
 .privacy-update span{color:#d8e2de;line-height:1.5;}
+.publish-checklist{display:grid;gap:12px;margin:16px 0;}
+.publish-checklist-item{display:grid;grid-template-columns:28px 1fr;align-items:start;gap:12px;background:white;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 8px 22px rgba(17,24,32,.05);cursor:pointer;line-height:1.4;}
+.publish-checklist-item.checked{background:#f1fff8;border-color:rgba(50,230,138,.75);}
+.publish-checklist-item input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--green-dark);box-shadow:none;cursor:pointer;}
+.publish-checklist-item span{display:grid;gap:6px;min-width:0;}
+.publish-checklist-item strong{display:block;font-size:1rem;line-height:1.25;}
+.publish-checklist-item small{display:block;color:var(--muted);font-weight:550;line-height:1.45;}
+.publish-result{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:16px 0;}
+.publish-result.risk-low{background:#f1fff8;border-color:rgba(50,230,138,.75);}
+.publish-result.risk-medium{background:#fffaf0;border-color:rgba(255,200,87,.9);}
+.publish-result.risk-high{background:#fff6f5;border-color:rgba(230,78,78,.42);}
+.publish-result p{line-height:1.55;margin:0 0 14px;}
+.publish-progress{height:12px;background:rgba(17,24,32,.09);border-radius:999px;overflow:hidden;margin:12px 0 2px;}
+.publish-progress-bar{display:block;height:100%;border-radius:999px;transition:width .2s ease;}
+.publish-progress-bar.risk-low{background:var(--green-dark);}
+.publish-progress-bar.risk-medium{background:#ffc857;}
+.publish-progress-bar.risk-high{background:#e65a50;}
+.publish-actions,.publish-quick-links{display:grid;gap:10px;margin:16px 0;}
+.publish-quick-links .secondary-btn{text-align:center;}
 @media(max-width:699px){.app-shell{padding-bottom:126px;}.bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));}.module-card{min-height:148px;}}
-@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions,.my-evia-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links{grid-template-columns:repeat(3,1fr);}.about-links,.privacy-links,.saved-data-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions,.my-evia-actions,.publish-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links,.publish-quick-links{grid-template-columns:repeat(3,1fr);}.about-links,.privacy-links,.saved-data-grid{grid-template-columns:repeat(2,1fr);}}

@@ -58,6 +58,11 @@ const myEviaForm = document.getElementById("myEviaForm");
 const myEviaSummary = document.getElementById("myEviaSummary");
 const clearMyEviaBtn = document.getElementById("clearMyEvia");
 const myEviaStorageKey = "eviaUserVehicle";
+const publishChecklistForm = document.getElementById("publishChecklistForm");
+const publishChecklistResult = document.getElementById("publishChecklistResult");
+const savePublishChecklistBtn = document.getElementById("savePublishChecklist");
+const resetPublishChecklistBtn = document.getElementById("resetPublishChecklist");
+const publishChecklistStorageKey = "eviaPublishChecklist";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -458,6 +463,108 @@ if (firstStepsForm) {
   });
 }
 
+function getPublishChecklistInputs() {
+  return Array.from(document.querySelectorAll("#publishChecklistForm input[type='checkbox']"));
+}
+
+function getPublishChecklistEvaluation(score) {
+  if (score >= 11) {
+    return {
+      riskClass: "risk-low",
+      statusText: "✅ Casi lista para empaquetar",
+      message:
+        "EVIA está bien encaminada para comenzar la preparación técnica hacia Play Store.",
+    };
+  }
+
+  if (score >= 6) {
+    return {
+      riskClass: "risk-medium",
+      statusText: "⚠️ Buen avance",
+      message:
+        "EVIA ya tiene una base sólida. Ahora conviene preparar textos de tienda, capturas oficiales y revisión técnica.",
+    };
+  }
+
+  return {
+    riskClass: "risk-high",
+    statusText: "🔴 Preparación inicial",
+    message:
+      "EVIA todavía está en etapa de preparación. Prioriza privacidad, pruebas móviles, identidad visual y funciones principales.",
+  };
+}
+
+function updatePublishChecklist() {
+  if (!publishChecklistForm || !publishChecklistResult) return;
+
+  const inputs = getPublishChecklistInputs();
+  const completedCount = inputs.filter((input) => input.checked).length;
+  const total = inputs.length;
+  const progress = total ? Math.round((completedCount / total) * 100) : 0;
+  const evaluation = getPublishChecklistEvaluation(completedCount);
+
+  inputs.forEach((input) => {
+    input.closest(".publish-checklist-item")?.classList.toggle("checked", input.checked);
+  });
+
+  publishChecklistResult.classList.remove("risk-low", "risk-medium", "risk-high");
+  publishChecklistResult.classList.add(evaluation.riskClass);
+  publishChecklistResult.innerHTML = `
+    <div class="checklist-score">Has completado ${completedCount} de ${total} puntos</div>
+    <div class="checklist-risk">${evaluation.statusText}</div>
+    <p>${evaluation.message}</p>
+    <div class="publish-progress">
+      <span style="width:${progress}%" class="publish-progress-bar ${evaluation.riskClass}"></span>
+    </div>
+  `;
+}
+
+function savePublishChecklist() {
+  const checkedKeys = getPublishChecklistInputs()
+    .filter((input) => input.checked)
+    .map((input) => input.dataset.publishCheck);
+
+  localStorage.setItem(publishChecklistStorageKey, JSON.stringify(checkedKeys));
+}
+
+function loadPublishChecklist() {
+  if (!publishChecklistForm) return;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(publishChecklistStorageKey)) || [];
+    const savedSet = new Set(saved);
+
+    getPublishChecklistInputs().forEach((input) => {
+      input.checked = savedSet.has(input.dataset.publishCheck);
+    });
+  } catch (error) {
+    localStorage.removeItem(publishChecklistStorageKey);
+  }
+
+  updatePublishChecklist();
+}
+
+if (publishChecklistForm) {
+  loadPublishChecklist();
+
+  getPublishChecklistInputs().forEach((input) => {
+    input.addEventListener("change", updatePublishChecklist);
+  });
+
+  savePublishChecklistBtn?.addEventListener("click", () => {
+    savePublishChecklist();
+    updatePublishChecklist();
+  });
+
+  resetPublishChecklistBtn?.addEventListener("click", () => {
+    getPublishChecklistInputs().forEach((input) => {
+      input.checked = false;
+    });
+    localStorage.removeItem(publishChecklistStorageKey);
+    updatePublishChecklist();
+  });
+}
+
 const myEviaFields = {
   vehicleName: "myEviaVehicleName",
   batteryCapacity: "myEviaBatteryCapacity",
@@ -590,7 +697,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=14")
+      .register("service-worker.js?v=15")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
