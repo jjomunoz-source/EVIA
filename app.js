@@ -54,6 +54,10 @@ const firstStepsResult = document.getElementById("firstStepsResult");
 const saveFirstStepsBtn = document.getElementById("saveFirstSteps");
 const resetFirstStepsBtn = document.getElementById("resetFirstSteps");
 const firstStepsStorageKey = "eviaFirstSteps";
+const myEviaForm = document.getElementById("myEviaForm");
+const myEviaSummary = document.getElementById("myEviaSummary");
+const clearMyEviaBtn = document.getElementById("clearMyEvia");
+const myEviaStorageKey = "eviaUserVehicle";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -454,6 +458,121 @@ if (firstStepsForm) {
   });
 }
 
+const myEviaFields = {
+  vehicleName: "myEviaVehicleName",
+  batteryCapacity: "myEviaBatteryCapacity",
+  realRange: "myEviaRealRange",
+  consumption: "myEviaConsumption",
+  priceKwh: "myEviaPriceKwh",
+  chargerPower: "myEviaChargerPower",
+};
+
+function getMyEviaData() {
+  try {
+    return JSON.parse(localStorage.getItem(myEviaStorageKey));
+  } catch (error) {
+    localStorage.removeItem(myEviaStorageKey);
+    return null;
+  }
+}
+
+function readMyEviaForm() {
+  return Object.fromEntries(
+    Object.entries(myEviaFields).map(([key, id]) => [key, document.getElementById(id)?.value.trim() || ""])
+  );
+}
+
+function fillMyEviaForm(data) {
+  if (!myEviaForm || !data) return;
+
+  Object.entries(myEviaFields).forEach(([key, id]) => {
+    const input = document.getElementById(id);
+    if (input) input.value = data[key] || "";
+  });
+}
+
+function formatSavedValue(value, suffix = "") {
+  return value ? `${value}${suffix}` : "No informado";
+}
+
+function escapeHtml(value) {
+  const element = document.createElement("div");
+  element.textContent = value || "";
+  return element.innerHTML;
+}
+
+function updateMyEviaSummary(data = getMyEviaData()) {
+  if (!myEviaSummary) return;
+
+  const hasSavedData = data && Object.values(data).some(Boolean);
+  if (!hasSavedData) {
+    myEviaSummary.innerHTML = "<h3>Datos guardados</h3><p>Aún no has guardado datos de tu vehículo.</p>";
+    return;
+  }
+
+  myEviaSummary.innerHTML = `
+    <h3>Datos guardados</h3>
+    <div class="saved-data-grid">
+      <div class="saved-data-item"><span>Vehículo</span><strong>${escapeHtml(data.vehicleName) || "No informado"}</strong></div>
+      <div class="saved-data-item"><span>Capacidad de batería</span><strong>${formatSavedValue(data.batteryCapacity, " kWh")}</strong></div>
+      <div class="saved-data-item"><span>Autonomía real estimada</span><strong>${formatSavedValue(data.realRange, " km")}</strong></div>
+      <div class="saved-data-item"><span>Consumo promedio</span><strong>${formatSavedValue(data.consumption, " kWh/100 km")}</strong></div>
+      <div class="saved-data-item"><span>Precio kWh</span><strong>${data.priceKwh ? formatClp(data.priceKwh) : "No informado"}</strong></div>
+      <div class="saved-data-item"><span>Potencia cargador</span><strong>${formatSavedValue(data.chargerPower, " kW")}</strong></div>
+    </div>
+  `;
+}
+
+function prefillInputIfEmpty(id, value) {
+  const input = document.getElementById(id);
+  if (input && !input.value && value) input.value = value;
+}
+
+function prefillToolFromMyEvia(target) {
+  const data = getMyEviaData();
+  if (!data) return;
+
+  if (target === "calculator") {
+    prefillInputIfEmpty("batteryCapacity", data.batteryCapacity);
+    prefillInputIfEmpty("priceKwh", data.priceKwh);
+    prefillInputIfEmpty("chargerPower", data.chargerPower);
+    prefillInputIfEmpty("evConsumption", data.consumption);
+  }
+
+  if (target === "tripPlanner") {
+    prefillInputIfEmpty("tripRange", data.realRange);
+  }
+}
+
+if (myEviaForm) {
+  const savedData = getMyEviaData();
+  fillMyEviaForm(savedData);
+  updateMyEviaSummary(savedData);
+
+  myEviaForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = readMyEviaForm();
+    localStorage.setItem(myEviaStorageKey, JSON.stringify(data));
+    updateMyEviaSummary(data);
+  });
+
+  clearMyEviaBtn?.addEventListener("click", () => {
+    myEviaForm.reset();
+    localStorage.removeItem(myEviaStorageKey);
+    updateMyEviaSummary(null);
+  });
+}
+
+navButtons.forEach((button) => {
+  button.addEventListener("click", () => prefillToolFromMyEvia(button.dataset.target));
+});
+
+window.addEventListener("hashchange", () => {
+  prefillToolFromMyEvia(window.location.hash.replace("#", ""));
+});
+
+prefillToolFromMyEvia(window.location.hash.replace("#", ""));
+
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredPrompt = event;
@@ -471,7 +590,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=12")
+      .register("service-worker.js?v=13")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }

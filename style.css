@@ -90,5 +90,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 .about-links span{color:var(--muted);font-weight:700;}
 .about-version{display:grid;gap:5px;background:var(--surface-dark);color:white;border-radius:var(--radius);padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
 .about-version span{color:#d8e2de;font-size:.92rem;}
+.my-evia-card p{line-height:1.58;margin-bottom:0;}
+.my-evia-actions{display:grid;gap:10px;}
+.my-evia-summary{background:#f1fff8;border:1px solid rgba(50,230,138,.7);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:16px 0;}
+.my-evia-summary h3{margin:0 0 14px;}
+.my-evia-summary>p{color:var(--muted);line-height:1.5;margin:0;}
+.saved-data-grid{display:grid;gap:10px;}
+.saved-data-item{display:grid;gap:4px;background:white;border:1px solid rgba(50,230,138,.38);border-radius:16px;padding:13px 14px;}
+.saved-data-item span{color:var(--muted);font-size:.8rem;font-weight:800;}
+.saved-data-item strong{line-height:1.3;overflow-wrap:anywhere;}
 @media(max-width:699px){.app-shell{padding-bottom:126px;}.bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));}.module-card{min-height:148px;}}
-@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links{grid-template-columns:repeat(3,1fr);}.about-links{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions,.my-evia-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links{grid-template-columns:repeat(3,1fr);}.about-links,.saved-data-grid{grid-template-columns:repeat(2,1fr);}}
