@@ -99,5 +99,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 .saved-data-item{display:grid;gap:4px;background:white;border:1px solid rgba(50,230,138,.38);border-radius:16px;padding:13px 14px;}
 .saved-data-item span{color:var(--muted);font-size:.8rem;font-weight:800;}
 .saved-data-item strong{line-height:1.3;overflow-wrap:anywhere;}
+.privacy-card p{line-height:1.58;margin-bottom:0;}
+.privacy-list{display:grid;gap:10px;margin:16px 0 0;padding-left:22px;line-height:1.45;}
+.privacy-list li::marker{content:"✓  ";color:var(--green-dark);font-weight:bold;}
+.privacy-links{display:grid;gap:10px;margin-top:16px;}
+.privacy-links a{display:grid;gap:3px;text-decoration:none;background:#f9fbfa;border:1px solid var(--border);border-radius:16px;padding:14px;color:var(--text);}
+.privacy-links a:active{transform:scale(.99);}
+.privacy-links span{color:var(--muted);font-weight:700;}
+.privacy-update{display:grid;gap:6px;background:var(--surface-dark);color:white;border-radius:var(--radius);padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+.privacy-update span{color:#d8e2de;line-height:1.5;}
 @media(max-width:699px){.app-shell{padding-bottom:126px;}.bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));}.module-card{min-height:148px;}}
-@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions,.my-evia-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links{grid-template-columns:repeat(3,1fr);}.about-links,.saved-data-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:700px){.app-shell{padding-bottom:36px;}.bottom-nav{position:sticky;bottom:auto;top:88px;transform:none;left:auto;margin:18px auto 0;width:min(520px,100%);}.result-grid{grid-template-columns:repeat(2,1fr);}.action-links,.checklist-actions,.first-steps-actions,.my-evia-actions{grid-template-columns:repeat(2,1fr);}.quick-action-links{grid-template-columns:repeat(3,1fr);}.about-links,.privacy-links,.saved-data-grid{grid-template-columns:repeat(2,1fr);}}
