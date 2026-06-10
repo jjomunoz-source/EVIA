@@ -3,8 +3,21 @@ const navButtons = document.querySelectorAll("[data-target]");
 const bottomNavButtons = document.querySelectorAll(".nav-btn");
 const installBtn = document.getElementById("installBtn");
 const heroScrollButtons = document.querySelectorAll("[data-scroll-target]");
+const params = new URLSearchParams(window.location.search);
+const isAdminMode = params.get("admin") === "evia";
+const adminModeBadge = document.getElementById("adminModeBadge");
+const publishChecklistAccess = document.querySelector(
+  '.module-card[data-target="publishChecklist"]'
+);
 const validScreens = new Set(Array.from(screens).map((screen) => screen.id));
 let deferredPrompt = null;
+
+if (isAdminMode) {
+  adminModeBadge?.classList.remove("internal-only");
+  publishChecklistAccess?.classList.remove("internal-only");
+  publishChecklistAccess?.removeAttribute("aria-hidden");
+  publishChecklistAccess?.removeAttribute("tabindex");
+}
 
 function showScreen(id, updateHash = true) {
   const targetId = validScreens.has(id) ? id : "home";
@@ -739,7 +752,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=18")
+      .register("service-worker.js?v=20")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
