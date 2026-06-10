@@ -135,6 +135,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 .publish-description-features p{font-weight:750;}
 .publish-description-card .secondary-btn{width:100%;}
 .publish-copy-status{display:block;min-height:20px;margin-top:10px;color:var(--green-dark);font-size:.84rem;font-weight:800;text-align:center;}
+.internal-only{display:none!important;}
 .topbar{align-items:center;gap:10px;padding:10px 0;min-width:0;}
 .brand{display:grid;grid-template-columns:68px minmax(0,1fr);align-items:center;gap:10px;flex:1 1 250px;min-width:0;}
 .brand-mark{display:flex;align-items:center;justify-content:center;flex:0 0 68px;width:68px;height:62px;padding:2px;border:1px solid rgba(17,24,32,.06);border-radius:16px;background:#e9eeeb;}
