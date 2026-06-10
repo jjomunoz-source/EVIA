@@ -71,6 +71,9 @@ const publishChecklistResult = document.getElementById("publishChecklistResult")
 const savePublishChecklistBtn = document.getElementById("savePublishChecklist");
 const resetPublishChecklistBtn = document.getElementById("resetPublishChecklist");
 const publishChecklistStorageKey = "eviaPublishChecklist";
+const copyPublishDescriptionBtn = document.getElementById("copyPublishDescription");
+const publishDescriptionText = document.getElementById("publishDescriptionText");
+const publishCopyStatus = document.getElementById("publishCopyStatus");
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -573,6 +576,37 @@ if (publishChecklistForm) {
   });
 }
 
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      // Continue with the compatibility fallback below.
+    }
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  return copied;
+}
+
+copyPublishDescriptionBtn?.addEventListener("click", async () => {
+  if (!publishDescriptionText || !publishCopyStatus) return;
+
+  const copied = await copyTextToClipboard(publishDescriptionText.innerText.trim());
+  publishCopyStatus.textContent = copied
+    ? "Descripción copiada."
+    : "No se pudo copiar. Intenta nuevamente.";
+});
+
 const myEviaFields = {
   vehicleName: "myEviaVehicleName",
   batteryCapacity: "myEviaBatteryCapacity",
@@ -705,7 +739,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=16")
+      .register("service-worker.js?v=17")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
