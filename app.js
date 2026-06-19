@@ -89,13 +89,17 @@ const publishDescriptionText = document.getElementById("publishDescriptionText")
 const publishCopyStatus = document.getElementById("publishCopyStatus");
 const evGuideSearch = document.getElementById("evGuideSearch");
 const evGuideBrand = document.getElementById("evGuideBrand");
+const evGuideStatus = document.getElementById("evGuideStatus");
+const evGuideStats = document.getElementById("evGuideStats");
 const evGuideCount = document.getElementById("evGuideCount");
 const evModelGrid = document.getElementById("evModelGrid");
 const evGuideEmpty = document.getElementById("evGuideEmpty");
 const clearEvGuideFiltersBtn = document.getElementById("clearEvGuideFilters");
 const evModelDetail = document.getElementById("evModelDetail");
-const evCategoryChips = document.querySelectorAll(".ev-category-chip");
+const evTechnologyFilters = document.getElementById("evTechnologyFilters");
+const evCategoryFilters = document.getElementById("evCategoryFilters");
 let evSelectedCategory = "all";
+let evSelectedTechnology = "all";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -114,7 +118,10 @@ function normalizeText(value) {
   return String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
 }
 
 function escapeHtml(value) {
@@ -130,6 +137,188 @@ function getEvModels() {
   return typeof evModelsChile !== "undefined" && Array.isArray(evModelsChile)
     ? evModelsChile
     : [];
+}
+
+function getTechnologyLabel(technology) {
+  const labels = {
+    BEV: "100% eléctrico",
+    PHEV: "Híbrido enchufable",
+    REEV: "Eléctrico de rango extendido",
+  };
+  return labels[technology] || technology || "Tecnología por confirmar";
+}
+
+function getCategoryGroup(category) {
+  const normalized = normalizeText(category);
+
+  if (normalized.includes("citycar") || normalized.includes("hatchback")) {
+    return "Citycar / Hatchback";
+  }
+
+  if (normalized.includes("suv compacto")) return "SUV compacto";
+
+  if (
+    normalized.includes("suv mediano") ||
+    normalized.includes("suv grande") ||
+    normalized.includes("premium") ||
+    normalized.includes("crossover")
+  ) {
+    return "SUV mediano / Premium";
+  }
+
+  if (normalized.includes("sedan") || normalized.includes("coupe") || normalized.includes("roadster")) {
+    return "Sedán / Coupé";
+  }
+
+  if (normalized.includes("pickup")) return "Pickup";
+
+  if (
+    normalized.includes("comercial") ||
+    normalized.includes("furgon") ||
+    normalized.includes("chasis") ||
+    normalized.includes("minibus")
+  ) {
+    return "Comercial";
+  }
+
+  if (normalized.includes("mpv") || normalized.includes("familiar")) return "MPV / Familiar";
+
+  return category || "Otros";
+}
+
+function getStatusInfo(model) {
+  const status = normalizeText(model.commercialStatus);
+  const observations = normalizeText(model.observations);
+  const needsReview =
+    model.reviewRequired ||
+    status.includes("verificar") ||
+    status.includes("confirmar") ||
+    observations.includes("verificar") ||
+    observations.includes("confirmar") ||
+    observations.includes("todo") ||
+    observations.includes("posible duplicacion");
+
+  if (needsReview) {
+    return { key: "verify", label: "Por verificar", className: "status-verify" };
+  }
+
+  if (status.includes("anunciado") || status.includes("lanzamiento")) {
+    return { key: "launch", label: "Lanzamiento / anunciado", className: "status-launch" };
+  }
+
+  if (
+    status.includes("disponible") ||
+    status.includes("inicio de ventas") ||
+    status.includes("ventas registradas") ||
+    status.includes("catalogo") ||
+    status.includes("mercado chileno")
+  ) {
+    return { key: "available", label: "Disponible", className: "status-available" };
+  }
+
+  return { key: "verify", label: "Por verificar", className: "status-verify" };
+}
+
+function cleanPublicObservation(model) {
+  const statusInfo = getStatusInfo(model);
+  if (statusInfo.key === "verify") {
+    return "Disponibilidad o versión pendiente de confirmación.";
+  }
+
+  const raw = String(model.observations || "").trim();
+  if (!raw) return "Sin observaciones públicas relevantes.";
+
+  const internalTerms = [
+    "todo",
+    "verificar ficha",
+    "posible duplicación",
+    "posible duplicacion",
+    "confirmar stock",
+    "confirmar denominación",
+    "confirmar denominacion",
+  ];
+  const publicParts = raw
+    .split(/(?<=[.!?])\s+|;\s+/)
+    .map((part) => part.trim())
+    .filter((part) => part && !internalTerms.some((term) => normalizeText(part).includes(normalizeText(term))));
+
+  return publicParts.join(" ") || "Sin observaciones públicas relevantes.";
+}
+
+function isValidUrl(url) {
+  return /^https?:\/\//i.test(String(url || "").trim());
+}
+
+function buildChip({ label, value, active, type }) {
+  return `<button type="button" class="ev-filter-chip${active ? " active" : ""}" data-ev-${type}="${escapeHtml(value)}">${escapeHtml(label)}</button>`;
+}
+
+function populateEvGuideStats() {
+  if (!evGuideStats) return;
+  const models = getEvModels().filter((model) => model.includeInApp);
+  const brandCount = new Set(models.map((model) => model.brand).filter(Boolean)).size;
+  const techCount = (technology) => models.filter((model) => model.technology === technology).length;
+  const stats = [
+    { label: "modelos", value: models.length },
+    { label: "marcas", value: brandCount },
+    { label: "100% eléctricos", value: techCount("BEV") },
+    { label: "híbridos enchufables", value: techCount("PHEV") },
+    { label: "rango extendido", value: techCount("REEV") },
+  ];
+
+  evGuideStats.innerHTML = stats
+    .map(
+      (stat) => `
+        <div class="ev-stat-card">
+          <strong>${stat.value}</strong>
+          <span>${escapeHtml(stat.label)}</span>
+        </div>
+      `
+    )
+    .join("");
+}
+
+function populateEvTechnologyFilters() {
+  if (!evTechnologyFilters) return;
+  const options = [
+    { label: "Todos", value: "all" },
+    { label: "100% eléctricos", value: "BEV" },
+    { label: "Híbridos enchufables", value: "PHEV" },
+    { label: "Rango extendido", value: "REEV" },
+  ];
+  evTechnologyFilters.innerHTML = options
+    .map((option) =>
+      buildChip({
+        label: option.label,
+        value: option.value,
+        active: evSelectedTechnology === option.value,
+        type: "technology",
+      })
+    )
+    .join("");
+}
+
+function populateEvCategoryFilters() {
+  if (!evCategoryFilters) return;
+  const groups = [
+    ...new Set(getEvModels().map((model) => getCategoryGroup(model.category)).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b, "es"));
+  const options = [
+    { label: "Todos", value: "all" },
+    { label: "Modelos destacados", value: "featured" },
+    ...groups.map((group) => ({ label: group, value: group })),
+  ];
+
+  evCategoryFilters.innerHTML = options
+    .map((option) =>
+      buildChip({
+        label: option.label,
+        value: option.value,
+        active: evSelectedCategory === option.value,
+        type: "category",
+      })
+    )
+    .join("");
 }
 
 function populateEvGuideBrands() {
@@ -151,31 +340,44 @@ function populateEvGuideBrands() {
 function getFilteredEvModels() {
   const searchTerm = normalizeText(evGuideSearch?.value || "");
   const selectedBrand = evGuideBrand?.value || "all";
+  const selectedStatus = evGuideStatus?.value || "all";
 
   return getEvModels().filter((model) => {
+    const statusInfo = getStatusInfo(model);
     const matchesCategory =
       evSelectedCategory === "all" ||
       (evSelectedCategory === "featured" && model.featured) ||
-      model.category === evSelectedCategory;
+      getCategoryGroup(model.category) === evSelectedCategory;
+    const matchesTechnology =
+      evSelectedTechnology === "all" || model.technology === evSelectedTechnology;
+    const matchesStatus = selectedStatus === "all" || statusInfo.key === selectedStatus;
     const matchesBrand = selectedBrand === "all" || model.brand === selectedBrand;
-    const searchableText = normalizeText(`${model.brand} ${model.model} ${model.category}`);
+    const searchableText = normalizeText(
+      `${model.brand} ${model.model} ${model.technology} ${getTechnologyLabel(model.technology)} ${model.category} ${getCategoryGroup(model.category)} ${model.commercialStatus}`
+    );
     const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
 
-    return matchesCategory && matchesBrand && matchesSearch;
+    return matchesCategory && matchesTechnology && matchesStatus && matchesBrand && matchesSearch;
   });
 }
 
 function buildEvModelCard(model) {
-  const officialLink = model.officialUrl
+  const officialLink = isValidUrl(model.officialUrl)
     ? `<a href="${escapeHtml(model.officialUrl)}" target="_blank" rel="noopener noreferrer">Sitio oficial</a>`
     : "";
+  const statusInfo = getStatusInfo(model);
+  const featuredBadge = model.featured ? '<span class="ev-model-badge featured-badge">Destacado EVIA</span>' : "";
 
   return `
-    <article class="ev-model-card">
+    <article class="ev-model-card" data-ev-card-id="${escapeHtml(model.id)}" tabindex="0" role="button" aria-label="Ver ficha de ${escapeHtml(model.brand)} ${escapeHtml(model.model)}">
       <span class="ev-model-brand">${escapeHtml(model.brand)}</span>
       <h3 class="ev-model-title">${escapeHtml(model.model)}</h3>
       <p class="ev-model-category">${escapeHtml(model.category)}</p>
-      <span class="ev-model-badge">100% eléctrico</span>
+      <div class="ev-badge-row">
+        <span class="ev-model-badge technology-badge">${escapeHtml(getTechnologyLabel(model.technology))}</span>
+        <span class="ev-model-badge ${statusInfo.className}">${escapeHtml(statusInfo.label)}</span>
+        ${featuredBadge}
+      </div>
       <div class="ev-model-actions">
         <button type="button" class="secondary-btn" data-ev-model-id="${escapeHtml(model.id)}">Ver ficha</button>
         ${officialLink}
@@ -188,7 +390,18 @@ function renderEvGuide() {
   if (!evModelGrid || !evGuideCount || !evGuideEmpty) return;
 
   const models = getFilteredEvModels();
-  evGuideCount.textContent = `${models.length} ${models.length === 1 ? "modelo encontrado" : "modelos encontrados"}`;
+  const hasActiveFilters =
+    normalizeText(evGuideSearch?.value || "") ||
+    (evGuideBrand?.value || "all") !== "all" ||
+    (evGuideStatus?.value || "all") !== "all" ||
+    evSelectedCategory !== "all" ||
+    evSelectedTechnology !== "all";
+
+  if (!hasActiveFilters) {
+    evGuideCount.textContent = `${models.length} modelos registrados`;
+  } else {
+    evGuideCount.textContent = `${models.length} ${models.length === 1 ? "modelo encontrado" : "modelos encontrados"} con los filtros actuales`;
+  }
   evModelGrid.innerHTML = models.map(buildEvModelCard).join("");
   evModelGrid.classList.toggle("hidden", models.length === 0);
   evGuideEmpty.classList.toggle("hidden", models.length > 0);
@@ -200,8 +413,12 @@ function openEvModelDetail(modelId) {
   const model = getEvModels().find((item) => item.id === modelId);
   if (!model) return;
 
-  const officialButton = model.officialUrl
+  const officialButton = isValidUrl(model.officialUrl)
     ? `<a href="${escapeHtml(model.officialUrl)}" target="_blank" rel="noopener noreferrer" class="primary-btn">Visitar sitio oficial</a>`
+    : "";
+  const statusInfo = getStatusInfo(model);
+  const anacSales = model.anacSales2026
+    ? `<p><strong>Ventas acumuladas informadas 2026:</strong> ${Number(model.anacSales2026).toLocaleString("es-CL")} unidades</p><p class="ev-model-note">Dato disponible solo para algunos modelos según informes públicos de ANAC.</p>`
     : "";
 
   evModelDetail.classList.remove("hidden");
@@ -209,10 +426,19 @@ function openEvModelDetail(modelId) {
     <div>
       <span class="ev-model-brand">${escapeHtml(model.brand)}</span>
       <h3>${escapeHtml(model.model)}</h3>
+      <div class="ev-badge-row">
+        <span class="ev-model-badge technology-badge">${escapeHtml(getTechnologyLabel(model.technology))}</span>
+        <span class="ev-model-badge ${statusInfo.className}">${escapeHtml(statusInfo.label)}</span>
+        ${model.featured ? '<span class="ev-model-badge featured-badge">Destacado EVIA</span>' : ""}
+      </div>
+      <p><strong>Marca:</strong> ${escapeHtml(model.brand)}</p>
+      <p><strong>Modelo:</strong> ${escapeHtml(model.model)}</p>
+      <p><strong>Tecnología:</strong> ${escapeHtml(getTechnologyLabel(model.technology))}</p>
       <p><strong>Categoría:</strong> ${escapeHtml(model.category)}</p>
-      <p><strong>Tipo:</strong> Vehículo 100% eléctrico</p>
-      <p><strong>Estado:</strong> Presente o comercializado en el mercado chileno</p>
-      <p>En próximas actualizaciones EVIA incorporará batería, autonomía, carga, precio referencial y herramientas de comparación.</p>
+      <p><strong>Estado comercial:</strong> ${escapeHtml(model.commercialStatus || statusInfo.label)}</p>
+      <p><strong>Última verificación:</strong> ${escapeHtml(model.verifiedAt || "Por confirmar")}</p>
+      ${anacSales}
+      <p><strong>Observaciones:</strong> ${escapeHtml(cleanPublicObservation(model))}</p>
       <div class="ev-model-actions">
         ${officialButton}
         <button type="button" class="secondary-btn ev-detail-close">Volver al directorio</button>
@@ -230,15 +456,19 @@ function closeEvModelDetail() {
 function clearEvGuideFilters() {
   if (evGuideSearch) evGuideSearch.value = "";
   if (evGuideBrand) evGuideBrand.value = "all";
+  if (evGuideStatus) evGuideStatus.value = "all";
   evSelectedCategory = "all";
-  evCategoryChips.forEach((chip) => {
-    chip.classList.toggle("active", chip.dataset.evCategory === "all");
-  });
+  evSelectedTechnology = "all";
+  populateEvTechnologyFilters();
+  populateEvCategoryFilters();
   closeEvModelDetail();
   renderEvGuide();
 }
 
 if (evModelGrid) {
+  populateEvGuideStats();
+  populateEvTechnologyFilters();
+  populateEvCategoryFilters();
   populateEvGuideBrands();
   renderEvGuide();
 
@@ -252,18 +482,49 @@ if (evModelGrid) {
     renderEvGuide();
   });
 
-  evCategoryChips.forEach((chip) => {
-    chip.addEventListener("click", () => {
-      evSelectedCategory = chip.dataset.evCategory || "all";
-      evCategoryChips.forEach((item) => item.classList.toggle("active", item === chip));
+  evGuideStatus?.addEventListener("change", () => {
+    closeEvModelDetail();
+    renderEvGuide();
+  });
+
+  evTechnologyFilters?.addEventListener("click", (event) => {
+    const chip = event.target.closest("[data-ev-technology]");
+    if (chip) {
+      evSelectedTechnology = chip.dataset.evTechnology || "all";
+      populateEvTechnologyFilters();
       closeEvModelDetail();
       renderEvGuide();
-    });
+    }
+  });
+
+  evCategoryFilters?.addEventListener("click", (event) => {
+    const chip = event.target.closest("[data-ev-category]");
+    if (chip) {
+      evSelectedCategory = chip.dataset.evCategory || "all";
+      populateEvCategoryFilters();
+      closeEvModelDetail();
+      renderEvGuide();
+    }
   });
 
   evModelGrid.addEventListener("click", (event) => {
     const button = event.target.closest("[data-ev-model-id]");
-    if (button) openEvModelDetail(button.dataset.evModelId);
+    const link = event.target.closest("a");
+    if (link) return;
+    if (button) {
+      openEvModelDetail(button.dataset.evModelId);
+      return;
+    }
+    const card = event.target.closest("[data-ev-card-id]");
+    if (card) openEvModelDetail(card.dataset.evCardId);
+  });
+
+  evModelGrid.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const card = event.target.closest("[data-ev-card-id]");
+    if (!card) return;
+    event.preventDefault();
+    openEvModelDetail(card.dataset.evCardId);
   });
 
   evModelDetail?.addEventListener("click", (event) => {
@@ -924,7 +1185,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=24")
+      .register("service-worker.js?v=25")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
