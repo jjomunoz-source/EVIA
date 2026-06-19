@@ -1,9 +1,10 @@
-const CACHE_NAME = 'evia-v20';
+const CACHE_NAME = 'evia-v22';
 
 const APP_SHELL = [
   './',
   './index.html',
   './style.css',
+  './ev-models.js',
   './app.js',
   './manifest.json',
 ];
@@ -22,6 +23,7 @@ function isAppShellRequest(request) {
   return (
     url.pathname.endsWith('/') ||
     url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/ev-models.js') ||
     url.pathname.endsWith('/app.js') ||
     url.pathname.endsWith('/style.css') ||
     url.pathname.endsWith('/manifest.json')

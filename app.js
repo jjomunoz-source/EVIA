@@ -87,6 +87,15 @@ const publishChecklistStorageKey = "eviaPublishChecklist";
 const copyPublishDescriptionBtn = document.getElementById("copyPublishDescription");
 const publishDescriptionText = document.getElementById("publishDescriptionText");
 const publishCopyStatus = document.getElementById("publishCopyStatus");
+const evGuideSearch = document.getElementById("evGuideSearch");
+const evGuideBrand = document.getElementById("evGuideBrand");
+const evGuideCount = document.getElementById("evGuideCount");
+const evModelGrid = document.getElementById("evModelGrid");
+const evGuideEmpty = document.getElementById("evGuideEmpty");
+const clearEvGuideFiltersBtn = document.getElementById("clearEvGuideFilters");
+const evModelDetail = document.getElementById("evModelDetail");
+const evCategoryChips = document.querySelectorAll(".ev-category-chip");
+let evSelectedCategory = "all";
 
 function formatClp(value) {
   return `$${Math.round(value).toLocaleString("es-CL")} CLP`;
@@ -99,6 +108,169 @@ function formatChargeTime(hours) {
   if (wholeHours === 0) return `${minutes} min aprox.`;
   if (minutes === 0) return `${wholeHours} h aprox.`;
   return `${wholeHours} h ${minutes} min aprox.`;
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getEvModels() {
+  return typeof evModelsChile !== "undefined" && Array.isArray(evModelsChile)
+    ? evModelsChile
+    : [];
+}
+
+function populateEvGuideBrands() {
+  if (!evGuideBrand) return;
+
+  const brands = [...new Set(getEvModels().map((model) => model.brand))]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b, "es"));
+
+  evGuideBrand.innerHTML = '<option value="all">Todas las marcas</option>';
+  brands.forEach((brand) => {
+    const option = document.createElement("option");
+    option.value = brand;
+    option.textContent = brand;
+    evGuideBrand.appendChild(option);
+  });
+}
+
+function getFilteredEvModels() {
+  const searchTerm = normalizeText(evGuideSearch?.value || "");
+  const selectedBrand = evGuideBrand?.value || "all";
+
+  return getEvModels().filter((model) => {
+    const matchesCategory =
+      evSelectedCategory === "all" ||
+      (evSelectedCategory === "featured" && model.featured) ||
+      model.category === evSelectedCategory;
+    const matchesBrand = selectedBrand === "all" || model.brand === selectedBrand;
+    const searchableText = normalizeText(`${model.brand} ${model.model} ${model.category}`);
+    const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+
+    return matchesCategory && matchesBrand && matchesSearch;
+  });
+}
+
+function buildEvModelCard(model) {
+  const officialLink = model.officialUrl
+    ? `<a href="${escapeHtml(model.officialUrl)}" target="_blank" rel="noopener noreferrer">Sitio oficial</a>`
+    : "";
+
+  return `
+    <article class="ev-model-card">
+      <span class="ev-model-brand">${escapeHtml(model.brand)}</span>
+      <h3 class="ev-model-title">${escapeHtml(model.model)}</h3>
+      <p class="ev-model-category">${escapeHtml(model.category)}</p>
+      <span class="ev-model-badge">100% eléctrico</span>
+      <div class="ev-model-actions">
+        <button type="button" class="secondary-btn" data-ev-model-id="${escapeHtml(model.id)}">Ver ficha</button>
+        ${officialLink}
+      </div>
+    </article>
+  `;
+}
+
+function renderEvGuide() {
+  if (!evModelGrid || !evGuideCount || !evGuideEmpty) return;
+
+  const models = getFilteredEvModels();
+  evGuideCount.textContent = `${models.length} ${models.length === 1 ? "modelo encontrado" : "modelos encontrados"}`;
+  evModelGrid.innerHTML = models.map(buildEvModelCard).join("");
+  evModelGrid.classList.toggle("hidden", models.length === 0);
+  evGuideEmpty.classList.toggle("hidden", models.length > 0);
+}
+
+function openEvModelDetail(modelId) {
+  if (!evModelDetail) return;
+
+  const model = getEvModels().find((item) => item.id === modelId);
+  if (!model) return;
+
+  const officialButton = model.officialUrl
+    ? `<a href="${escapeHtml(model.officialUrl)}" target="_blank" rel="noopener noreferrer" class="primary-btn">Visitar sitio oficial</a>`
+    : "";
+
+  evModelDetail.classList.remove("hidden");
+  evModelDetail.innerHTML = `
+    <div>
+      <span class="ev-model-brand">${escapeHtml(model.brand)}</span>
+      <h3>${escapeHtml(model.model)}</h3>
+      <p><strong>Categoría:</strong> ${escapeHtml(model.category)}</p>
+      <p><strong>Tipo:</strong> Vehículo 100% eléctrico</p>
+      <p><strong>Estado:</strong> Presente o comercializado en el mercado chileno</p>
+      <p>En próximas actualizaciones EVIA incorporará batería, autonomía, carga, precio referencial y herramientas de comparación.</p>
+      <div class="ev-model-actions">
+        ${officialButton}
+        <button type="button" class="secondary-btn ev-detail-close">Volver al directorio</button>
+      </div>
+    </div>
+  `;
+  evModelDetail.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function closeEvModelDetail() {
+  evModelDetail?.classList.add("hidden");
+  if (evModelDetail) evModelDetail.innerHTML = "";
+}
+
+function clearEvGuideFilters() {
+  if (evGuideSearch) evGuideSearch.value = "";
+  if (evGuideBrand) evGuideBrand.value = "all";
+  evSelectedCategory = "all";
+  evCategoryChips.forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.evCategory === "all");
+  });
+  closeEvModelDetail();
+  renderEvGuide();
+}
+
+if (evModelGrid) {
+  populateEvGuideBrands();
+  renderEvGuide();
+
+  evGuideSearch?.addEventListener("input", () => {
+    closeEvModelDetail();
+    renderEvGuide();
+  });
+
+  evGuideBrand?.addEventListener("change", () => {
+    closeEvModelDetail();
+    renderEvGuide();
+  });
+
+  evCategoryChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      evSelectedCategory = chip.dataset.evCategory || "all";
+      evCategoryChips.forEach((item) => item.classList.toggle("active", item === chip));
+      closeEvModelDetail();
+      renderEvGuide();
+    });
+  });
+
+  evModelGrid.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-ev-model-id]");
+    if (button) openEvModelDetail(button.dataset.evModelId);
+  });
+
+  evModelDetail?.addEventListener("click", (event) => {
+    if (event.target.closest(".ev-detail-close")) closeEvModelDetail();
+  });
+
+  clearEvGuideFiltersBtn?.addEventListener("click", clearEvGuideFilters);
 }
 
 if (chargeForm) {
@@ -752,7 +924,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=20")
+      .register("service-worker.js?v=22")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }
