@@ -1185,7 +1185,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=25")
+      .register("service-worker.js?v=26")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }

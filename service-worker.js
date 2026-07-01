@@ -1,4 +1,4 @@
-const CACHE_NAME = 'evia-v25';
+const CACHE_NAME = 'evia-v26';
 
 const APP_SHELL = [
   './',
