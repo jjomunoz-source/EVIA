@@ -1,23 +1,37 @@
+const params = new URLSearchParams(window.location.search);
+const isAdminMode = params.get("admin") === "evia";
+
+function enableAdminMode() {
+  if (!isAdminMode) return;
+
+  const learnGrid = document.querySelector(".learn-grid");
+  const main = document.querySelector("main");
+  const learnSection = document.querySelector(".learn-section");
+
+  const badge = document.createElement("div");
+  badge.className = "admin-mode-badge";
+  badge.id = "adminModeBadge";
+  badge.setAttribute("role", "status");
+  badge.textContent = "Modo interno EVIA activo";
+  learnSection?.before(badge);
+
+  learnGrid?.insertAdjacentHTML(
+    "beforeend",
+    '<button class="module-card learn-card" data-target="publishChecklist"><span class="module-icon">📲</span><strong>Checklist publicación EVIA</strong><small>Revisa Play Store interno.</small><em>Abrir interno →</em></button>'
+  );
+
+  main?.insertAdjacentHTML("beforeend", "<section id=\"publishChecklist\" class=\"screen\"><button class=\"back-btn\" data-target=\"home\">← Volver</button><h2>📲 Checklist publicación EVIA</h2><p class=\"lead\">Revisa los puntos clave antes de preparar EVIA para Play Store y futuras tiendas de apps.</p><div class=\"content-card accent\"><h3>Preparación para tienda</h3><p>Antes de publicar una app, conviene revisar identidad, funciones, privacidad, pruebas, capturas y textos oficiales. Este checklist ayuda a ordenar el avance de EVIA.</p></div><div class=\"content-card publish-description-card\"><h3>🧾 Descripción larga oficial</h3><p>Usa este texto como base para Play Store, presentación de EVIA o materiales oficiales.</p><div class=\"publish-description-text\" id=\"publishDescriptionText\"><p>EVIA es una guía digital creada para ayudar a usuarios de vehículos eléctricos en Chile a entender, cargar y cuidar mejor su auto eléctrico.</p><p>La app reúne herramientas simples y respuestas claras para resolver las dudas más comunes sobre electromovilidad: cuánto cuesta cargar, cómo planificar un viaje, cómo cuidar la batería, qué revisar antes de comprar un eléctrico usado y cómo comenzar si estás dando tus primeros pasos con un EV.</p><p><strong>Con EVIA puedes:</strong></p><div class=\"publish-description-features\"><p>⚡ Calcular el costo aproximado de una carga.</p><p>🗺️ Evaluar si tu batería alcanza para un viaje.</p><p>🔋 Aprender conceptos básicos sobre batería, autonomía y carga.</p><p>✅ Revisar puntos clave antes de comprar un vehículo eléctrico usado.</p><p>🚘 Seguir una guía inicial para usar mejor tu primer auto eléctrico.</p><p>📍 Acceder rápidamente a mapas y servicios útiles para encontrar cargadores.</p></div><p>EVIA está pensada tanto para personas que ya tienen un vehículo eléctrico como para quienes están evaluando comprar uno y quieren tomar mejores decisiones antes de dar el salto.</p><p>La electromovilidad puede parecer compleja al comienzo, pero no tiene por qué serlo. EVIA explica los temas importantes de forma simple, práctica y pensada para la realidad chilena.</p><p><strong>Importante:</strong><br/>Las herramientas de EVIA entregan estimaciones y orientación general. Antes de tomar decisiones de compra, instalación eléctrica, reparación, viaje o carga, revisa siempre el manual del fabricante y consulta con profesionales o servicios técnicos autorizados.</p><p><strong>EVIA — Electromovilidad simple para Chile.</strong></p></div><button type=\"button\" class=\"secondary-btn\" id=\"copyPublishDescription\">Copiar descripción</button><span class=\"publish-copy-status\" id=\"publishCopyStatus\" role=\"status\" aria-live=\"polite\"></span></div><form id=\"publishChecklistForm\" class=\"publish-checklist\"><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"appName\"/><span><strong>Nombre de la app definido</strong><small>EVIA debe mantener un nombre claro, fácil de recordar y consistente en app, redes y dominio.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"domain\"/><span><strong>Dominio oficial funcionando</strong><small>El sitio oficial debe cargar correctamente con HTTPS.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"icon\"/><span><strong>Ícono principal listo</strong><small>El ícono debe verse bien en pantalla de inicio, navegador y futura tienda.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"brand\"/><span><strong>Logo y marca consistentes</strong><small>Colores, logo, Eva y estilo visual deben mantenerse coherentes en toda la app.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"shortDescription\"/><span><strong>Descripción corta preparada</strong><small>Texto breve para explicar EVIA en una frase.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"longDescription\"/><span><strong>Descripción larga preparada</strong><small>Texto completo para ficha de Play Store o presentación oficial.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"privacy\"/><span><strong>Política de privacidad creada</strong><small>Debe explicar datos locales, enlaces externos y uso referencial de las herramientas.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"features\"/><span><strong>Funciones interactivas probadas</strong><small>Calculadora, planificador, checklist, Mi EVIA y guías deben funcionar correctamente.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"mobileTests\"/><span><strong>Pruebas en celular realizadas</strong><small>La app debe verse y funcionar bien en Android.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"screenshots\"/><span><strong>Capturas oficiales pendientes o listas</strong><small>Se necesitan capturas verticales limpias para tienda, redes y presentación.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"contact\"/><span><strong>Texto de contacto definido</strong><small>Debe existir una vía clara de contacto o redes oficiales.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"responsibleUse\"/><span><strong>Aviso de uso responsable incluido</strong><small>EVIA debe indicar que sus cálculos y recomendaciones son referenciales.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"performance\"/><span><strong>Rendimiento y carga revisados</strong><small>La app debe cargar rápido y sin errores visibles.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"android\"/><span><strong>Preparación técnica Android</strong><small>Pendiente preparar empaquetado futuro con TWA, Bubblewrap o Capacitor.</small></span></label></form><div class=\"publish-result risk-high\" id=\"publishChecklistResult\"><div class=\"checklist-score\">Has completado 0 de 14 puntos</div><div class=\"checklist-risk\">🔴 Preparación inicial</div><p>EVIA todavía está en etapa de preparación. Prioriza privacidad, pruebas móviles, identidad visual y funciones principales.</p><div class=\"publish-progress\"><span style=\"width:0%\" class=\"publish-progress-bar risk-high\"></span></div></div><div class=\"publish-actions\"><button type=\"button\" class=\"primary-btn\" id=\"savePublishChecklist\">Guardar checklist</button><button type=\"button\" class=\"secondary-btn\" id=\"resetPublishChecklist\">Reiniciar checklist</button></div><div class=\"publish-quick-links\"><button type=\"button\" class=\"secondary-btn\" data-target=\"privacyPolicy\">Ver Política de privacidad</button><button type=\"button\" class=\"secondary-btn\" data-target=\"aboutEvia\">Ver Acerca de EVIA</button><button type=\"button\" class=\"secondary-btn\" data-target=\"myEvia\">Ver Mi EVIA</button></div></section>");
+}
+
+enableAdminMode();
+
 const screens = document.querySelectorAll(".screen");
 const navButtons = document.querySelectorAll("[data-target]");
 const bottomNavButtons = document.querySelectorAll(".nav-btn");
 const installBtn = document.getElementById("installBtn");
 const heroScrollButtons = document.querySelectorAll("[data-scroll-target]");
-const params = new URLSearchParams(window.location.search);
-const isAdminMode = params.get("admin") === "evia";
-const adminModeBadge = document.getElementById("adminModeBadge");
-const publishChecklistAccess = document.querySelector(
-  '.module-card[data-target="publishChecklist"]'
-);
 const validScreens = new Set(Array.from(screens).map((screen) => screen.id));
 let deferredPrompt = null;
-
-if (isAdminMode) {
-  adminModeBadge?.classList.remove("internal-only");
-  publishChecklistAccess?.classList.remove("internal-only");
-  publishChecklistAccess?.removeAttribute("aria-hidden");
-  publishChecklistAccess?.removeAttribute("tabindex");
-}
 
 function showScreen(id, updateHash = true) {
   const targetId = validScreens.has(id) ? id : "home";
@@ -1185,7 +1199,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=26")
+      .register("service-worker.js?v=27")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }

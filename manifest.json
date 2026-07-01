@@ -1,7 +1,7 @@
 {
   "name": "EVIA - Electromovilidad simple para Chile",
   "short_name": "EVIA",
-  "description": "Guía simple para entender, cargar y cuidar tu vehículo eléctrico en Chile.",
+  "description": "Calcula costos de carga, planifica viajes, explora modelos eléctricos y encuentra herramientas para usar y comprar un EV en Chile.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f4f6f5",
