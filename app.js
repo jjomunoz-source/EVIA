@@ -128,6 +128,186 @@ function formatChargeTime(hours) {
   return `${wholeHours} h ${minutes} min aprox.`;
 }
 
+const calculatorFields = {
+  batteryCapacity: {
+    help: "En kWh.",
+    required: true,
+    minExclusive: 0,
+    max: 1000,
+    requiredMessage: "Ingresa una capacidad de batería válida.",
+    minMessage: "Ingresa una capacidad de batería válida.",
+    maxMessage: "Ingresa una capacidad de batería dentro de un rango razonable.",
+  },
+  currentPercent: {
+    help: "Entre 0 y 100.",
+    required: true,
+    min: 0,
+    max: 100,
+    requiredMessage: "Ingresa el porcentaje actual.",
+    minMessage: "El porcentaje actual debe estar entre 0 y 100.",
+    maxMessage: "El porcentaje actual debe estar entre 0 y 100.",
+  },
+  targetPercent: {
+    help: "Entre 1 y 100.",
+    required: true,
+    min: 1,
+    max: 100,
+    requiredMessage: "Ingresa el porcentaje objetivo.",
+    minMessage: "El porcentaje objetivo debe estar entre 1 y 100.",
+    maxMessage: "El porcentaje objetivo debe estar entre 1 y 100.",
+  },
+  priceKwh: {
+    help: "Usa el valor de tu tarifa domiciliaria o del cargador público.",
+    required: true,
+    minExclusive: 0,
+    requiredMessage: "Ingresa un precio por kWh válido.",
+    minMessage: "Ingresa un precio por kWh válido.",
+  },
+  chargerPower: {
+    help: "Potencia aproximada en kW. Si no la conoces, puedes dejarla vacía.",
+    minExclusive: 0,
+    minMessage: "Ingresa una potencia válida o deja el campo vacío.",
+  },
+  evConsumption: {
+    help: "Si no conoces este dato, usa entre 14 y 18 kWh/100 km como referencia.",
+    required: true,
+    minExclusive: 0,
+    requiredMessage: "Ingresa un consumo promedio válido.",
+    minMessage: "Ingresa un consumo promedio válido.",
+  },
+  monthlyKm: {
+    help: "Opcional. Permite estimar tu consumo y costo mensual.",
+    min: 0,
+    minMessage: "Los kilómetros mensuales deben ser cero o más.",
+  },
+};
+
+function normalizeCalculatorNumber(rawValue) {
+  const compactValue = String(rawValue || "").replace(/\s+/g, "");
+  if (!compactValue) return { empty: true, valid: false, value: null };
+
+  const commaCount = (compactValue.match(/,/g) || []).length;
+  const dotCount = (compactValue.match(/\./g) || []).length;
+  if (commaCount + dotCount > 1) return { empty: false, valid: false, value: null };
+
+  const normalizedValue = compactValue.replace(",", ".");
+  if (!/^-?(?:\d+|\d*\.\d+)$/.test(normalizedValue)) {
+    return { empty: false, valid: false, value: null };
+  }
+
+  const value = Number(normalizedValue);
+  return Number.isFinite(value)
+    ? { empty: false, valid: true, value }
+    : { empty: false, valid: false, value: null };
+}
+
+function setCalculatorFieldError(id, message = "") {
+  const input = document.getElementById(id);
+  const error = document.getElementById(`${id}Error`);
+  if (!input || !error) return;
+
+  input.setAttribute("aria-invalid", message ? "true" : "false");
+  error.textContent = message;
+  error.hidden = !message;
+}
+
+function getCalculatorFieldError(config, parsed) {
+  if (parsed.empty) return config.required ? config.requiredMessage : "";
+  if (!parsed.valid) return "Ingresa un valor numérico válido. Puedes usar coma o punto para los decimales.";
+  if (config.minExclusive !== undefined && parsed.value <= config.minExclusive) return config.minMessage;
+  if (config.min !== undefined && parsed.value < config.min) return config.minMessage;
+  if (config.max !== undefined && parsed.value > config.max) return config.maxMessage;
+  return "";
+}
+
+function setupCalculatorFields() {
+  if (!chargeForm) return;
+
+  chargeForm.noValidate = true;
+
+  Object.entries(calculatorFields).forEach(([id, config]) => {
+    const input = document.getElementById(id);
+    const label = input?.closest("label");
+    const help = label?.querySelector("small");
+    if (!input || !label) return;
+
+    input.type = "text";
+    input.inputMode = "decimal";
+    input.autocomplete = "off";
+    input.required = Boolean(config.required);
+    input.setAttribute("aria-invalid", "false");
+
+    const helpId = `${id}Help`;
+    const errorId = `${id}Error`;
+    if (help) {
+      help.id = helpId;
+      help.textContent = config.help;
+    }
+
+    let error = document.getElementById(errorId);
+    if (!error) {
+      error = document.createElement("span");
+      error.id = errorId;
+      error.className = "field-error";
+      error.hidden = true;
+      label.appendChild(error);
+    }
+
+    input.setAttribute("aria-describedby", help ? `${helpId} ${errorId}` : errorId);
+    input.addEventListener("input", () => setCalculatorFieldError(id));
+  });
+}
+
+function validateCalculatorValues() {
+  const values = {};
+  const provided = {};
+  let isValid = true;
+
+  Object.entries(calculatorFields).forEach(([id, config]) => {
+    const input = document.getElementById(id);
+    const parsed = normalizeCalculatorNumber(input?.value || "");
+    const error = getCalculatorFieldError(config, parsed);
+
+    values[id] = parsed.value;
+    provided[id] = !parsed.empty;
+    setCalculatorFieldError(id, error);
+    if (error) isValid = false;
+  });
+
+  if (isValid && values.targetPercent <= values.currentPercent) {
+    setCalculatorFieldError("targetPercent", "El porcentaje objetivo debe ser mayor que el actual.");
+    isValid = false;
+  }
+
+  return { isValid, values, provided };
+}
+
+function calculatorIcon(name) {
+  const icons = {
+    energy: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 14h6l-1 8 9-13h-6l0-7Z"/></svg>',
+    money: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4V7Zm3 3a2 2 0 0 1-2 2 2 2 0 0 1 2 2h10a2 2 0 0 1 2-2 2 2 0 0 1-2-2H7Zm5 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm1 9.1 3.4 2-.9 1.5L11 13V7h2v5.1Z"/></svg>',
+    range: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l2 5v6h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3v-6l2-5Zm.4 2-1 3h11.2l-1-3H7.4Z"/></svg>',
+    chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5h2v12h14v2H4Zm4-4 3-4 3 2 4-6 2 1.3-5.2 7.7-3.2-2.1-2.8 3.7L8 15Z"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm11 8H6v10h12V10ZM6 8h12V6H6v2Z"/></svg>',
+  };
+
+  return `<span class="result-icon" aria-hidden="true">${icons[name] || icons.energy}</span>`;
+}
+
+function renderCalculatorResultItem(icon, label, value, detail = "", extraClass = "") {
+  return `
+    <div class="result-item ${extraClass}">
+      ${calculatorIcon(icon)}
+      <div>
+        <span>${label}</span>
+        <strong>${value}</strong>
+        ${detail ? `<small>${detail}</small>` : ""}
+      </div>
+    </div>
+  `;
+}
+
 function normalizeText(value) {
   return String(value || "")
     .normalize("NFD")
@@ -549,76 +729,77 @@ if (evModelGrid) {
 }
 
 if (chargeForm) {
+  setupCalculatorFields();
+
   chargeForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const batteryCapacity = Number(document.getElementById("batteryCapacity").value);
-    const currentPercent = Number(document.getElementById("currentPercent").value);
-    const targetPercent = Number(document.getElementById("targetPercent").value);
-    const priceKwh = Number(document.getElementById("priceKwh").value);
-    const chargerPower = Number(document.getElementById("chargerPower").value);
-    const evConsumption = Number(document.getElementById("evConsumption").value);
-    const monthlyKm = Number(document.getElementById("monthlyKm").value);
-
-    if (
-      !batteryCapacity ||
-      !priceKwh ||
-      currentPercent < 0 ||
-      targetPercent <= currentPercent ||
-      targetPercent > 100
-    ) {
-      calcResult.classList.remove("hidden");
-      calcResult.innerHTML =
-        "<h3>Revisa los datos</h3><p>El porcentaje objetivo debe ser mayor al porcentaje actual y no superar 100%.</p>";
+    const { isValid, values, provided } = validateCalculatorValues();
+    if (!isValid) {
+      calcResult.classList.add("hidden");
+      chargeForm.querySelector('[aria-invalid="true"]')?.focus();
       return;
     }
 
+    const {
+      batteryCapacity,
+      currentPercent,
+      targetPercent,
+      priceKwh,
+      chargerPower,
+      evConsumption,
+      monthlyKm,
+    } = values;
+
     const energyNeeded = batteryCapacity * ((targetPercent - currentPercent) / 100);
     const estimatedCost = energyNeeded * priceKwh;
-    const timeEstimate = chargerPower > 0 ? formatChargeTime(energyNeeded / chargerPower) : null;
-    const addedRange = evConsumption > 0 ? (energyNeeded / evConsumption) * 100 : null;
-    const costPer100Km = evConsumption > 0 ? evConsumption * priceKwh : null;
-    const monthlyEnergy =
-      evConsumption > 0 && monthlyKm > 0 ? (evConsumption * monthlyKm) / 100 : null;
-    const monthlyCost = monthlyEnergy ? monthlyEnergy * priceKwh : null;
-
-    let advice = "Para uso diario, intenta mantener rangos intermedios de carga.";
-    if (targetPercent > 90) {
-      advice =
-        "Cargar sobre 90% puede ser útil antes de viajes largos, pero no siempre es necesario para el día a día.";
-    } else if (targetPercent <= 80) {
-      advice =
-        "Buen rango para uso diario. Cargar hasta 80% suele ser una práctica saludable para la batería.";
-    }
+    const timeEstimate = provided.chargerPower
+      ? formatChargeTime(energyNeeded / chargerPower)
+      : null;
+    const addedRange = (energyNeeded / evConsumption) * 100;
+    const costPer100Km = evConsumption * priceKwh;
+    const monthlyEnergy = provided.monthlyKm ? (evConsumption * monthlyKm) / 100 : null;
+    const monthlyCost = provided.monthlyKm ? monthlyEnergy * priceKwh : null;
+    const advice =
+      "Para el uso diario, muchos fabricantes recomiendan limitar la carga habitual alrededor del 80 %. Revisa siempre las indicaciones de tu vehículo.";
 
     calcResult.classList.remove("hidden");
     calcResult.innerHTML = `
       <h3>Resultado estimado</h3>
       <div class="result-grid">
-        <div class="result-item"><span class="result-icon">⚡</span><div><span>Energía necesaria</span><strong>${energyNeeded.toFixed(1)} kWh</strong></div></div>
-        <div class="result-item"><span class="result-icon">💰</span><div><span>Costo de carga</span><strong>${formatClp(estimatedCost)}</strong></div></div>
+        ${renderCalculatorResultItem("energy", "Energía necesaria", `${energyNeeded.toFixed(1)} kWh`)}
+        ${renderCalculatorResultItem("money", "Costo de carga", formatClp(estimatedCost))}
         ${
           timeEstimate
-            ? `<div class="result-item"><span class="result-icon">⏱️</span><div><span>Tiempo estimado</span><strong>${timeEstimate}</strong></div></div>`
-            : ""
+            ? renderCalculatorResultItem("clock", "Tiempo estimado", timeEstimate)
+            : renderCalculatorResultItem(
+                "clock",
+                "Tiempo estimado",
+                "Ingresa la potencia del cargador para estimar el tiempo.",
+                "",
+                "result-item-muted"
+              )
         }
+        ${renderCalculatorResultItem(
+          "range",
+          "Autonomía agregada",
+          `${Math.round(addedRange).toLocaleString("es-CL")} km aprox.`
+        )}
+        ${renderCalculatorResultItem("chart", "Costo por 100 km", formatClp(costPer100Km))}
         ${
-          addedRange
-            ? `<div class="result-item"><span class="result-icon">🚗</span><div><span>Autonomía agregada</span><strong>${Math.round(addedRange).toLocaleString("es-CL")} km aprox.</strong></div></div>`
-            : ""
-        }
-        ${
-          costPer100Km
-            ? `<div class="result-item"><span class="result-icon">📊</span><div><span>Costo por 100 km</span><strong>${formatClp(costPer100Km)}</strong></div></div>`
-            : ""
-        }
-        ${
-          monthlyCost && monthlyEnergy
-            ? `<div class="result-item result-item-monthly"><span class="result-icon">📅</span><div><span>Costo mensual</span><strong>${formatClp(monthlyCost)}</strong><small>${monthlyEnergy.toFixed(1)} kWh mensuales estimados</small></div></div>`
+          provided.monthlyKm
+            ? renderCalculatorResultItem(
+                "calendar",
+                "Costo mensual",
+                formatClp(monthlyCost),
+                `Energía mensual estimada: ${monthlyEnergy.toFixed(1)} kWh`,
+                "result-item-monthly"
+              )
             : ""
         }
       </div>
       <p class="result-advice">${advice}</p>
+      <p class="result-disclaimer">Los valores son estimaciones y pueden variar según el vehículo, la temperatura, la eficiencia de carga y la tarifa utilizada.</p>
     `;
   });
 }
