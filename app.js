@@ -290,6 +290,10 @@ function calculatorIcon(name) {
     range: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l2 5v6h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3v-6l2-5Zm.4 2-1 3h11.2l-1-3H7.4Z"/></svg>',
     chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5h2v12h14v2H4Zm4-4 3-4 3 2 4-6 2 1.3-5.2 7.7-3.2-2.1-2.8 3.7L8 15Z"/></svg>',
     calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm11 8H6v10h12V10ZM6 8h12V6H6v2Z"/></svg>',
+    battery: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h16v10H3V7Zm18 3h2v4h-2v-4ZM6 10v4h8v-4H6Z"/></svg>',
+    distance: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Zm0 5.5A1.5 1.5 0 1 1 6 6.5a1.5 1.5 0 0 1 0 3Zm12-.5a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM8.8 18h4.4v2H8.8v-2Zm1.7-5h3v2h-3v-2Z"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5.2 3.4 9.7 8 11 4.6-1.3 8-5.8 8-11V5l-8-3Zm1 14h-2v-2h2v2Zm0-4h-2V7h2v5Z"/></svg>',
   };
 
   return `<span class="result-icon" aria-hidden="true">${icons[name] || icons.energy}</span>`;
@@ -804,8 +808,126 @@ if (chargeForm) {
   });
 }
 
+const tripFields = {
+  tripRange: {
+    required: true,
+    minExclusive: 0,
+    requiredMessage: "Ingresa una autonomía válida.",
+    minMessage: "Ingresa una autonomía válida.",
+  },
+  tripBatteryPercent: {
+    required: true,
+    min: 0,
+    max: 100,
+    requiredMessage: "Ingresa el porcentaje de batería actual.",
+    minMessage: "El porcentaje de batería debe estar entre 0 y 100.",
+    maxMessage: "El porcentaje de batería debe estar entre 0 y 100.",
+  },
+  tripDistance: {
+    required: true,
+    minExclusive: 0,
+    requiredMessage: "Ingresa la distancia del viaje.",
+    minMessage: "La distancia debe ser mayor que cero.",
+  },
+  tripSafetyMargin: {
+    required: true,
+    min: 0,
+    max: 100,
+    requiredMessage: "Ingresa el margen de seguridad.",
+    minMessage: "El margen debe estar entre 0 y 100.",
+    maxMessage: "El margen debe estar entre 0 y 100.",
+  },
+};
+
 function formatPercent(value) {
-  return `${value.toFixed(1)}%`;
+  return `${value.toLocaleString("es-CL", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })} %`;
+}
+
+function formatConfiguredPercent(value) {
+  return `${value.toLocaleString("es-CL", { maximumFractionDigits: 1 })} %`;
+}
+
+function formatBatteryPoints(value) {
+  return value.toLocaleString("es-CL", {
+    minimumFractionDigits: value % 1 === 0 ? 0 : 1,
+    maximumFractionDigits: 1,
+  });
+}
+
+function setTripFieldError(id, message = "") {
+  const input = document.getElementById(id);
+  const error = document.getElementById(`${id}Error`);
+  if (!input || !error) return;
+
+  input.setAttribute("aria-invalid", message ? "true" : "false");
+  error.textContent = message;
+  error.hidden = !message;
+}
+
+function getTripFieldError(config, parsed) {
+  if (parsed.empty) return config.required ? config.requiredMessage : "";
+  if (!parsed.valid) return "Ingresa un valor numérico válido. Puedes usar coma o punto para los decimales.";
+  if (config.minExclusive !== undefined && parsed.value <= config.minExclusive) return config.minMessage;
+  if (config.min !== undefined && parsed.value < config.min) return config.minMessage;
+  if (config.max !== undefined && parsed.value > config.max) return config.maxMessage;
+  return "";
+}
+
+function setupTripFields() {
+  if (!tripForm) return;
+
+  tripForm.noValidate = true;
+
+  Object.entries(tripFields).forEach(([id, config]) => {
+    const input = document.getElementById(id);
+    const label = input?.closest("label");
+    const help = label?.querySelector("small");
+    if (!input || !label) return;
+
+    input.type = "text";
+    input.inputMode = "decimal";
+    input.autocomplete = "off";
+    input.required = true;
+    input.setAttribute("aria-invalid", "false");
+    if (id === "tripBatteryPercent") input.setAttribute("min", "0");
+    if (id === "tripSafetyMargin") input.setAttribute("max", "100");
+
+    const helpId = `${id}Help`;
+    const errorId = `${id}Error`;
+    if (help) help.id = helpId;
+
+    let error = document.getElementById(errorId);
+    if (!error) {
+      error = document.createElement("span");
+      error.id = errorId;
+      error.className = "field-error";
+      error.hidden = true;
+      label.appendChild(error);
+    }
+
+    input.setAttribute("aria-describedby", help ? `${helpId} ${errorId}` : errorId);
+    input.addEventListener("input", () => setTripFieldError(id));
+  });
+}
+
+function validateTripValues() {
+  const values = {};
+  let isValid = true;
+
+  Object.entries(tripFields).forEach(([id, config]) => {
+    const input = document.getElementById(id);
+    const parsed = normalizeCalculatorNumber(input?.value || "");
+    const error = getTripFieldError(config, parsed);
+
+    values[id] = parsed.value;
+    setTripFieldError(id, error);
+    if (error) isValid = false;
+  });
+
+  return { isValid, values };
 }
 
 function loadTripPlannerLast() {
@@ -825,57 +947,64 @@ function loadTripPlannerLast() {
 }
 
 if (tripForm) {
+  setupTripFields();
   loadTripPlannerLast();
 
   tripForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const tripRange = Number(document.getElementById("tripRange").value);
-    const tripBatteryPercent = Number(document.getElementById("tripBatteryPercent").value);
-    const tripDistance = Number(document.getElementById("tripDistance").value);
-    const tripSafetyMargin = Number(document.getElementById("tripSafetyMargin").value || 0);
-
-    if (
-      tripRange <= 0 ||
-      tripBatteryPercent <= 0 ||
-      tripBatteryPercent > 100 ||
-      tripDistance <= 0 ||
-      tripSafetyMargin < 0 ||
-      tripSafetyMargin > 50
-    ) {
-      tripResult.classList.remove("hidden", "green", "yellow", "red");
-      tripResult.innerHTML =
-        "<h3>Revisa los datos ingresados</h3><p>La autonomía, porcentaje actual y distancia deben ser mayores a cero.</p>";
+    const { isValid, values } = validateTripValues();
+    if (!isValid) {
+      tripResult.classList.add("hidden");
+      tripForm.querySelector('[aria-invalid="true"]')?.focus();
       return;
     }
 
+    const { tripRange, tripBatteryPercent, tripDistance, tripSafetyMargin } = values;
     const availableRange = tripRange * (tripBatteryPercent / 100);
     const neededBattery = (tripDistance / tripRange) * 100;
     const remainingBattery = tripBatteryPercent - neededBattery;
     const remainingRange = tripRange * (remainingBattery / 100);
     const safetyMarginKm = tripRange * (tripSafetyMargin / 100);
+    const recommendedStartBattery = neededBattery + tripSafetyMargin;
+    const recommendedRounded = Math.min(100, Math.ceil(recommendedStartBattery));
+    const chargeDeficit = recommendedStartBattery - tripBatteryPercent;
+    const missingMarginPoints = Math.max(0, tripSafetyMargin - Math.max(0, remainingBattery));
+    const cannotKeepMarginWithoutStop = recommendedStartBattery > 100;
 
     let statusClass = "red";
-    let statusText = "🔴 Necesitas cargar";
+    let statusText = "No alcanza";
     let message =
-      "Con la carga actual no alcanzarías a completar el viaje. Carga antes de salir o planifica una parada.";
+      "La carga actual no permite completar el viaje. Carga antes de salir o planifica una parada.";
     let evaTip =
-      "Consejo de Eva: antes de salir, revisa cargadores disponibles y considera una parada intermedia.";
+      "Consejo de Eva: La carga actual no permite completar el viaje. Carga antes de salir o planifica una parada.";
 
     if (remainingBattery >= tripSafetyMargin) {
       statusClass = "green";
-      statusText = "✅ Viaje posible";
+      statusText = "Viaje seguro";
       message =
-        "Tu carga actual debería alcanzar para este viaje manteniendo el margen de seguridad indicado.";
+        `Tu carga actual permite completar el viaje conservando el margen elegido. Llegarías con ${formatPercent(
+          remainingBattery
+        )} y ${Math.max(0, Math.round(remainingRange)).toLocaleString("es-CL")} km aprox.`;
       evaTip =
-        "Consejo de Eva: aun cuando el viaje sea posible, revisa clima, velocidad y cargadores cercanos por si necesitas margen extra.";
+        "Consejo de Eva: Tu carga actual permite completar el viaje conservando el margen elegido.";
     } else if (remainingBattery >= 0) {
       statusClass = "yellow";
-      statusText = "⚠️ Viaje justo";
+      statusText = "Viaje justo";
       message =
-        "Podrías llegar, pero con poco margen. Revisa cargadores en ruta o considera cargar antes de salir.";
-      evaTip =
-        "Consejo de Eva: si el resultado queda justo, cargar unos minutos antes de salir puede hacer el viaje mucho más tranquilo.";
+        `Puedes completar el viaje, pero llegarías bajo el margen configurado. Te faltan aproximadamente ${formatBatteryPoints(
+          missingMarginPoints
+        )} puntos de batería para cumplir el margen elegido.`;
+      evaTip = cannotKeepMarginWithoutStop
+        ? "Consejo de Eva: No es posible conservar este margen realizando el trayecto sin una parada de recarga."
+        : `Consejo de Eva: Para conservar un ${formatConfiguredPercent(
+            tripSafetyMargin
+          )} al llegar, carga aproximadamente hasta el ${recommendedRounded} % o planifica una parada de recarga.`;
+    }
+
+    if (cannotKeepMarginWithoutStop && remainingBattery < tripSafetyMargin) {
+      message +=
+        " No es posible conservar este margen realizando el trayecto sin una parada de recarga.";
     }
 
     localStorage.setItem(
@@ -894,17 +1023,64 @@ if (tripForm) {
       <div class="trip-status ${statusClass}">${statusText}</div>
       <p>${message}</p>
       <div class="result-grid">
-        <div class="result-item"><span class="result-icon">🔋</span><div><span>Autonomía disponible</span><strong>${Math.round(availableRange).toLocaleString("es-CL")} km aprox.</strong></div></div>
-        <div class="result-item"><span class="result-icon">🛣️</span><div><span>Distancia del viaje</span><strong>${Math.round(tripDistance).toLocaleString("es-CL")} km</strong></div></div>
-        <div class="result-item"><span class="result-icon">⚡</span><div><span>Batería necesaria</span><strong>${formatPercent(neededBattery)}</strong></div></div>
-        <div class="result-item"><span class="result-icon">📍</span><div><span>Batería al llegar</span><strong>${formatPercent(remainingBattery)}</strong></div></div>
-        <div class="result-item"><span class="result-icon">🚗</span><div><span>Autonomía restante</span><strong>${Math.max(0, Math.round(remainingRange)).toLocaleString("es-CL")} km aprox.</strong></div></div>
-        <div class="result-item"><span class="result-icon">🛡️</span><div><span>Margen de seguridad</span><strong>${Math.round(tripSafetyMargin)}%</strong><small>${Math.round(safetyMarginKm).toLocaleString("es-CL")} km reservados aprox.</small></div></div>
+        ${renderCalculatorResultItem(
+          "battery",
+          "Autonomía disponible",
+          `${Math.round(availableRange).toLocaleString("es-CL")} km aprox.`
+        )}
+        ${renderCalculatorResultItem(
+          "distance",
+          "Distancia del viaje",
+          `${Math.round(tripDistance).toLocaleString("es-CL")} km`
+        )}
+        ${renderCalculatorResultItem("energy", "Batería necesaria", formatPercent(neededBattery))}
+        ${renderCalculatorResultItem(
+          "pin",
+          "Batería al llegar",
+          remainingBattery >= 0 ? formatPercent(remainingBattery) : "No alcanza",
+          remainingBattery < 0
+            ? `Déficit del viaje: ${formatBatteryPoints(Math.abs(remainingBattery))} puntos de batería.`
+            : ""
+        )}
+        ${renderCalculatorResultItem(
+          "range",
+          "Autonomía restante",
+          remainingBattery >= 0
+            ? `${Math.round(Math.max(0, remainingRange)).toLocaleString("es-CL")} km aprox.`
+            : "0 km",
+          remainingBattery < 0 ? "No alcanza para completar el viaje." : ""
+        )}
+        ${renderCalculatorResultItem(
+          "shield",
+          "Margen configurado",
+          formatConfiguredPercent(tripSafetyMargin),
+          `Meta de reserva: ${Math.round(safetyMarginKm).toLocaleString("es-CL")} km aprox.`
+        )}
+        ${renderCalculatorResultItem(
+          "chart",
+          "Carga recomendada al salir",
+          cannotKeepMarginWithoutStop ? "Requiere parada" : `${recommendedRounded} % aprox.`,
+          cannotKeepMarginWithoutStop
+            ? "No es posible conservar este margen sin recargar en ruta."
+            : `Batería mínima recomendada: ${formatPercent(recommendedStartBattery)}.`
+        )}
+        ${
+          chargeDeficit > 0
+            ? renderCalculatorResultItem(
+                "energy",
+                "Déficit de carga",
+                `${formatBatteryPoints(chargeDeficit)} puntos de batería`,
+                "Diferencia entre tu carga actual y la batería mínima recomendada para salir.",
+                "result-item-deficit"
+              )
+            : ""
+        }
       </div>
       <p class="result-advice">${evaTip}</p>
+      <p class="result-disclaimer">Los valores son estimaciones. La autonomía real puede variar por velocidad, temperatura, desnivel, viento, climatización, carga transportada y estado de la batería.</p>
       <div class="action-links">
-        <a href="https://www.google.com/maps/search/?api=1&query=cargadores+electricos+cerca+de+mi" target="_blank" rel="noopener">Buscar ruta en Google Maps</a>
-        <a href="https://www.plugshare.com/" target="_blank" rel="noopener">Buscar cargadores en PlugShare</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=cargadores+electricos+cerca+de+mi" target="_blank" rel="noopener noreferrer">Abrir Google Maps</a>
+        <a href="https://www.plugshare.com/" target="_blank" rel="noopener noreferrer">Abrir PlugShare</a>
       </div>
     `;
   });

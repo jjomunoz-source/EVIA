@@ -430,6 +430,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
   display:none;
 }
 
+#tripForm input[aria-invalid="true"] {
+  border-color:#d14343;
+  background:#fff7f7;
+  box-shadow:0 0 0 4px rgba(209,67,67,.12);
+}
+
+#tripForm .field-error {
+  color:#a52020;
+  font-size:.78rem;
+  font-weight:750;
+  line-height:1.35;
+}
+
+#tripForm .field-error[hidden] {
+  display:none;
+}
+
 .result-icon svg {
   width:22px;
   height:22px;
@@ -450,6 +467,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
   color:var(--muted);
   font-size:.95rem;
   line-height:1.35;
+}
+
+.result-item-deficit {
+  border-color:rgba(255,200,87,.85);
+  background:#fffaf0;
 }
 
 .result-advice,
@@ -474,7 +496,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
   }
 
   #chargeForm label small,
-  #chargeForm .field-error {
+  #chargeForm .field-error,
+  #tripForm .field-error {
     font-size:.76rem;
   }
 }
