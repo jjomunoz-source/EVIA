@@ -17,10 +17,13 @@ function enableAdminMode() {
 
   learnGrid?.insertAdjacentHTML(
     "beforeend",
-    '<button class="module-card learn-card" data-target="publishChecklist"><span class="module-icon">📲</span><strong>Checklist publicación EVIA</strong><small>Revisa Play Store interno.</small><em>Abrir interno →</em></button>'
+    '<button type="button" class="module-card learn-card" data-target="publishChecklist"><span class="module-icon">📲</span><strong>Checklist publicación EVIA</strong><small>Revisa Play Store interno.</small><em>Abrir interno →</em></button>',
   );
 
-  main?.insertAdjacentHTML("beforeend", "<section id=\"publishChecklist\" class=\"screen\"><button class=\"back-btn\" data-target=\"home\">← Volver</button><h2>📲 Checklist publicación EVIA</h2><p class=\"lead\">Revisa los puntos clave antes de preparar EVIA para Play Store y futuras tiendas de apps.</p><div class=\"content-card accent\"><h3>Preparación para tienda</h3><p>Antes de publicar una app, conviene revisar identidad, funciones, privacidad, pruebas, capturas y textos oficiales. Este checklist ayuda a ordenar el avance de EVIA.</p></div><div class=\"content-card publish-description-card\"><h3>🧾 Descripción larga oficial</h3><p>Usa este texto como base para Play Store, presentación de EVIA o materiales oficiales.</p><div class=\"publish-description-text\" id=\"publishDescriptionText\"><p>EVIA es una guía digital creada para ayudar a usuarios de vehículos eléctricos en Chile a entender, cargar y cuidar mejor su auto eléctrico.</p><p>La app reúne herramientas simples y respuestas claras para resolver las dudas más comunes sobre electromovilidad: cuánto cuesta cargar, cómo planificar un viaje, cómo cuidar la batería, qué revisar antes de comprar un eléctrico usado y cómo comenzar si estás dando tus primeros pasos con un EV.</p><p><strong>Con EVIA puedes:</strong></p><div class=\"publish-description-features\"><p>⚡ Calcular el costo aproximado de una carga.</p><p>🗺️ Evaluar si tu batería alcanza para un viaje.</p><p>🔋 Aprender conceptos básicos sobre batería, autonomía y carga.</p><p>✅ Revisar puntos clave antes de comprar un vehículo eléctrico usado.</p><p>🚘 Seguir una guía inicial para usar mejor tu primer auto eléctrico.</p><p>📍 Acceder rápidamente a mapas y servicios útiles para encontrar cargadores.</p></div><p>EVIA está pensada tanto para personas que ya tienen un vehículo eléctrico como para quienes están evaluando comprar uno y quieren tomar mejores decisiones antes de dar el salto.</p><p>La electromovilidad puede parecer compleja al comienzo, pero no tiene por qué serlo. EVIA explica los temas importantes de forma simple, práctica y pensada para la realidad chilena.</p><p><strong>Importante:</strong><br/>Las herramientas de EVIA entregan estimaciones y orientación general. Antes de tomar decisiones de compra, instalación eléctrica, reparación, viaje o carga, revisa siempre el manual del fabricante y consulta con profesionales o servicios técnicos autorizados.</p><p><strong>EVIA — Electromovilidad simple para Chile.</strong></p></div><button type=\"button\" class=\"secondary-btn\" id=\"copyPublishDescription\">Copiar descripción</button><span class=\"publish-copy-status\" id=\"publishCopyStatus\" role=\"status\" aria-live=\"polite\"></span></div><form id=\"publishChecklistForm\" class=\"publish-checklist\"><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"appName\"/><span><strong>Nombre de la app definido</strong><small>EVIA debe mantener un nombre claro, fácil de recordar y consistente en app, redes y dominio.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"domain\"/><span><strong>Dominio oficial funcionando</strong><small>El sitio oficial debe cargar correctamente con HTTPS.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"icon\"/><span><strong>Ícono principal listo</strong><small>El ícono debe verse bien en pantalla de inicio, navegador y futura tienda.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"brand\"/><span><strong>Logo y marca consistentes</strong><small>Colores, logo, Eva y estilo visual deben mantenerse coherentes en toda la app.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"shortDescription\"/><span><strong>Descripción corta preparada</strong><small>Texto breve para explicar EVIA en una frase.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"longDescription\"/><span><strong>Descripción larga preparada</strong><small>Texto completo para ficha de Play Store o presentación oficial.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"privacy\"/><span><strong>Política de privacidad creada</strong><small>Debe explicar datos locales, enlaces externos y uso referencial de las herramientas.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"features\"/><span><strong>Funciones interactivas probadas</strong><small>Calculadora, planificador, checklist, Mi EVIA y guías deben funcionar correctamente.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"mobileTests\"/><span><strong>Pruebas en celular realizadas</strong><small>La app debe verse y funcionar bien en Android.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"screenshots\"/><span><strong>Capturas oficiales pendientes o listas</strong><small>Se necesitan capturas verticales limpias para tienda, redes y presentación.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"contact\"/><span><strong>Texto de contacto definido</strong><small>Debe existir una vía clara de contacto o redes oficiales.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"responsibleUse\"/><span><strong>Aviso de uso responsable incluido</strong><small>EVIA debe indicar que sus cálculos y recomendaciones son referenciales.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"performance\"/><span><strong>Rendimiento y carga revisados</strong><small>La app debe cargar rápido y sin errores visibles.</small></span></label><label class=\"publish-checklist-item\"><input type=\"checkbox\" data-publish-check=\"android\"/><span><strong>Preparación técnica Android</strong><small>Pendiente preparar empaquetado futuro con TWA, Bubblewrap o Capacitor.</small></span></label></form><div class=\"publish-result risk-high\" id=\"publishChecklistResult\"><div class=\"checklist-score\">Has completado 0 de 14 puntos</div><div class=\"checklist-risk\">🔴 Preparación inicial</div><p>EVIA todavía está en etapa de preparación. Prioriza privacidad, pruebas móviles, identidad visual y funciones principales.</p><div class=\"publish-progress\"><span style=\"width:0%\" class=\"publish-progress-bar risk-high\"></span></div></div><div class=\"publish-actions\"><button type=\"button\" class=\"primary-btn\" id=\"savePublishChecklist\">Guardar checklist</button><button type=\"button\" class=\"secondary-btn\" id=\"resetPublishChecklist\">Reiniciar checklist</button></div><div class=\"publish-quick-links\"><button type=\"button\" class=\"secondary-btn\" data-target=\"privacyPolicy\">Ver Política de privacidad</button><button type=\"button\" class=\"secondary-btn\" data-target=\"aboutEvia\">Ver Acerca de EVIA</button><button type=\"button\" class=\"secondary-btn\" data-target=\"myEvia\">Ver Mi EVIA</button></div></section>");
+  main?.insertAdjacentHTML(
+    "beforeend",
+    '<section id="publishChecklist" class="screen"><button type="button" class="back-btn" data-target="home">← Volver</button><h2>📲 Checklist publicación EVIA</h2><p class="lead">Revisa los puntos clave antes de preparar EVIA para Play Store y futuras tiendas de apps.</p><div class="content-card accent"><h3>Preparación para tienda</h3><p>Antes de publicar una app, conviene revisar identidad, funciones, privacidad, pruebas, capturas y textos oficiales. Este checklist ayuda a ordenar el avance de EVIA.</p></div><div class="content-card publish-description-card"><h3>🧾 Descripción larga oficial</h3><p>Usa este texto como base para Play Store, presentación de EVIA o materiales oficiales.</p><div class="publish-description-text" id="publishDescriptionText"><p>EVIA es una guía digital creada para ayudar a usuarios de vehículos eléctricos en Chile a entender, cargar y cuidar mejor su auto eléctrico.</p><p>La app reúne herramientas simples y respuestas claras para resolver las dudas más comunes sobre electromovilidad: cuánto cuesta cargar, cómo planificar un viaje, cómo cuidar la batería, qué revisar antes de comprar un eléctrico usado y cómo comenzar si estás dando tus primeros pasos con un EV.</p><p><strong>Con EVIA puedes:</strong></p><div class="publish-description-features"><p>⚡ Calcular el costo aproximado de una carga.</p><p>🗺️ Evaluar si tu batería alcanza para un viaje.</p><p>🔋 Aprender conceptos básicos sobre batería, autonomía y carga.</p><p>✅ Revisar puntos clave antes de comprar un vehículo eléctrico usado.</p><p>🚘 Seguir una guía inicial para usar mejor tu primer auto eléctrico.</p><p>📍 Acceder rápidamente a mapas y servicios útiles para encontrar cargadores.</p></div><p>EVIA está pensada tanto para personas que ya tienen un vehículo eléctrico como para quienes están evaluando comprar uno y quieren tomar mejores decisiones antes de dar el salto.</p><p>La electromovilidad puede parecer compleja al comienzo, pero no tiene por qué serlo. EVIA explica los temas importantes de forma simple, práctica y pensada para la realidad chilena.</p><p><strong>Importante:</strong><br/>Las herramientas de EVIA entregan estimaciones y orientación general. Antes de tomar decisiones de compra, instalación eléctrica, reparación, viaje o carga, revisa siempre el manual del fabricante y consulta con profesionales o servicios técnicos autorizados.</p><p><strong>EVIA — Electromovilidad simple para Chile.</strong></p></div><button type="button" class="secondary-btn" id="copyPublishDescription">Copiar descripción</button><span class="publish-copy-status" id="publishCopyStatus" role="status" aria-live="polite"></span></div><form id="publishChecklistForm" class="publish-checklist"><label class="publish-checklist-item"><input type="checkbox" data-publish-check="appName"/><span><strong>Nombre de la app definido</strong><small>EVIA debe mantener un nombre claro, fácil de recordar y consistente en app, redes y dominio.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="domain"/><span><strong>Dominio oficial funcionando</strong><small>El sitio oficial debe cargar correctamente con HTTPS.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="icon"/><span><strong>Ícono principal listo</strong><small>El ícono debe verse bien en pantalla de inicio, navegador y futura tienda.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="brand"/><span><strong>Logo y marca consistentes</strong><small>Colores, logo, Eva y estilo visual deben mantenerse coherentes en toda la app.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="shortDescription"/><span><strong>Descripción corta preparada</strong><small>Texto breve para explicar EVIA en una frase.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="longDescription"/><span><strong>Descripción larga preparada</strong><small>Texto completo para ficha de Play Store o presentación oficial.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="privacy"/><span><strong>Política de privacidad creada</strong><small>Debe explicar datos locales, enlaces externos y uso referencial de las herramientas.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="features"/><span><strong>Funciones interactivas probadas</strong><small>Calculadora, planificador, checklist, Mi EVIA y guías deben funcionar correctamente.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="mobileTests"/><span><strong>Pruebas en celular realizadas</strong><small>La app debe verse y funcionar bien en Android.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="screenshots"/><span><strong>Capturas oficiales pendientes o listas</strong><small>Se necesitan capturas verticales limpias para tienda, redes y presentación.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="contact"/><span><strong>Texto de contacto definido</strong><small>Debe existir una vía clara de contacto o redes oficiales.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="responsibleUse"/><span><strong>Aviso de uso responsable incluido</strong><small>EVIA debe indicar que sus cálculos y recomendaciones son referenciales.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="performance"/><span><strong>Rendimiento y carga revisados</strong><small>La app debe cargar rápido y sin errores visibles.</small></span></label><label class="publish-checklist-item"><input type="checkbox" data-publish-check="android"/><span><strong>Preparación técnica Android</strong><small>Pendiente preparar empaquetado futuro con TWA, Bubblewrap o Capacitor.</small></span></label></form><div class="publish-result risk-high" id="publishChecklistResult"><div class="checklist-score">Has completado 0 de 14 puntos</div><div class="checklist-risk">🔴 Preparación inicial</div><p>EVIA todavía está en etapa de preparación. Prioriza privacidad, pruebas móviles, identidad visual y funciones principales.</p><div class="publish-progress"><span style="width:0%" class="publish-progress-bar risk-high"></span></div></div><div class="publish-actions"><button type="button" class="primary-btn" id="savePublishChecklist">Guardar checklist</button><button type="button" class="secondary-btn" id="resetPublishChecklist">Reiniciar checklist</button></div><div class="publish-quick-links"><button type="button" class="secondary-btn" data-target="privacyPolicy">Ver Política de privacidad</button><button type="button" class="secondary-btn" data-target="aboutEvia">Ver Acerca de EVIA</button><button type="button" class="secondary-btn" data-target="myEvia">Ver Mi EVIA</button></div></section>',
+  );
 }
 
 enableAdminMode();
@@ -35,13 +38,24 @@ let deferredPrompt = null;
 
 function showScreen(id, updateHash = true) {
   const targetId = validScreens.has(id) ? id : "home";
+  const activeScreen = document.getElementById(targetId);
 
   screens.forEach((screen) => {
     screen.classList.toggle("active", screen.id === targetId);
+    screen.setAttribute(
+      "aria-hidden",
+      screen.id === targetId ? "false" : "true",
+    );
   });
 
   bottomNavButtons.forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.target === targetId);
+    const isActive = btn.dataset.target === targetId;
+    btn.classList.toggle("active", isActive);
+    if (isActive) {
+      btn.setAttribute("aria-current", "page");
+    } else {
+      btn.removeAttribute("aria-current");
+    }
   });
 
   if (updateHash) {
@@ -50,6 +64,14 @@ function showScreen(id, updateHash = true) {
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (targetId !== "home") {
+    const heading = activeScreen?.querySelector("h2");
+    if (heading) {
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    }
+  }
 }
 
 function showScreenFromHash() {
@@ -94,12 +116,20 @@ const myEviaSummary = document.getElementById("myEviaSummary");
 const clearMyEviaBtn = document.getElementById("clearMyEvia");
 const myEviaStorageKey = "eviaUserVehicle";
 const publishChecklistForm = document.getElementById("publishChecklistForm");
-const publishChecklistResult = document.getElementById("publishChecklistResult");
+const publishChecklistResult = document.getElementById(
+  "publishChecklistResult",
+);
 const savePublishChecklistBtn = document.getElementById("savePublishChecklist");
-const resetPublishChecklistBtn = document.getElementById("resetPublishChecklist");
+const resetPublishChecklistBtn = document.getElementById(
+  "resetPublishChecklist",
+);
 const publishChecklistStorageKey = "eviaPublishChecklist";
-const copyPublishDescriptionBtn = document.getElementById("copyPublishDescription");
-const publishDescriptionText = document.getElementById("publishDescriptionText");
+const copyPublishDescriptionBtn = document.getElementById(
+  "copyPublishDescription",
+);
+const publishDescriptionText = document.getElementById(
+  "publishDescriptionText",
+);
 const publishCopyStatus = document.getElementById("publishCopyStatus");
 const evGuideSearch = document.getElementById("evGuideSearch");
 const evGuideBrand = document.getElementById("evGuideBrand");
@@ -136,7 +166,8 @@ const calculatorFields = {
     max: 1000,
     requiredMessage: "Ingresa una capacidad de batería válida.",
     minMessage: "Ingresa una capacidad de batería válida.",
-    maxMessage: "Ingresa una capacidad de batería dentro de un rango razonable.",
+    maxMessage:
+      "Ingresa una capacidad de batería dentro de un rango razonable.",
   },
   currentPercent: {
     help: "Entre 0 y 100.",
@@ -183,22 +214,7 @@ const calculatorFields = {
 };
 
 function normalizeCalculatorNumber(rawValue) {
-  const compactValue = String(rawValue || "").replace(/\s+/g, "");
-  if (!compactValue) return { empty: true, valid: false, value: null };
-
-  const commaCount = (compactValue.match(/,/g) || []).length;
-  const dotCount = (compactValue.match(/\./g) || []).length;
-  if (commaCount + dotCount > 1) return { empty: false, valid: false, value: null };
-
-  const normalizedValue = compactValue.replace(",", ".");
-  if (!/^-?(?:\d+|\d*\.\d+)$/.test(normalizedValue)) {
-    return { empty: false, valid: false, value: null };
-  }
-
-  const value = Number(normalizedValue);
-  return Number.isFinite(value)
-    ? { empty: false, valid: true, value }
-    : { empty: false, valid: false, value: null };
+  return EviaCalculations.normalizeNumber(rawValue);
 }
 
 function setCalculatorFieldError(id, message = "") {
@@ -213,10 +229,14 @@ function setCalculatorFieldError(id, message = "") {
 
 function getCalculatorFieldError(config, parsed) {
   if (parsed.empty) return config.required ? config.requiredMessage : "";
-  if (!parsed.valid) return "Ingresa un valor numérico válido. Puedes usar coma o punto para los decimales.";
-  if (config.minExclusive !== undefined && parsed.value <= config.minExclusive) return config.minMessage;
-  if (config.min !== undefined && parsed.value < config.min) return config.minMessage;
-  if (config.max !== undefined && parsed.value > config.max) return config.maxMessage;
+  if (!parsed.valid)
+    return "Ingresa un valor numérico válido. Puedes usar coma o punto para los decimales.";
+  if (config.minExclusive !== undefined && parsed.value <= config.minExclusive)
+    return config.minMessage;
+  if (config.min !== undefined && parsed.value < config.min)
+    return config.minMessage;
+  if (config.max !== undefined && parsed.value > config.max)
+    return config.maxMessage;
   return "";
 }
 
@@ -253,7 +273,10 @@ function setupCalculatorFields() {
       label.appendChild(error);
     }
 
-    input.setAttribute("aria-describedby", help ? `${helpId} ${errorId}` : errorId);
+    input.setAttribute(
+      "aria-describedby",
+      help ? `${helpId} ${errorId}` : errorId,
+    );
     input.addEventListener("input", () => setCalculatorFieldError(id));
   });
 }
@@ -275,7 +298,10 @@ function validateCalculatorValues() {
   });
 
   if (isValid && values.targetPercent <= values.currentPercent) {
-    setCalculatorFieldError("targetPercent", "El porcentaje objetivo debe ser mayor que el actual.");
+    setCalculatorFieldError(
+      "targetPercent",
+      "El porcentaje objetivo debe ser mayor que el actual.",
+    );
     isValid = false;
   }
 
@@ -284,22 +310,37 @@ function validateCalculatorValues() {
 
 function calculatorIcon(name) {
   const icons = {
-    energy: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 14h6l-1 8 9-13h-6l0-7Z"/></svg>',
-    money: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4V7Zm3 3a2 2 0 0 1-2 2 2 2 0 0 1 2 2h10a2 2 0 0 1 2-2 2 2 0 0 1-2-2H7Zm5 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>',
-    clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm1 9.1 3.4 2-.9 1.5L11 13V7h2v5.1Z"/></svg>',
-    range: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l2 5v6h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3v-6l2-5Zm.4 2-1 3h11.2l-1-3H7.4Z"/></svg>',
-    chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5h2v12h14v2H4Zm4-4 3-4 3 2 4-6 2 1.3-5.2 7.7-3.2-2.1-2.8 3.7L8 15Z"/></svg>',
-    calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm11 8H6v10h12V10ZM6 8h12V6H6v2Z"/></svg>',
-    battery: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h16v10H3V7Zm18 3h2v4h-2v-4ZM6 10v4h8v-4H6Z"/></svg>',
-    distance: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Zm0 5.5A1.5 1.5 0 1 1 6 6.5a1.5 1.5 0 0 1 0 3Zm12-.5a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM8.8 18h4.4v2H8.8v-2Zm1.7-5h3v2h-3v-2Z"/></svg>',
+    energy:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 14h6l-1 8 9-13h-6l0-7Z"/></svg>',
+    money:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4V7Zm3 3a2 2 0 0 1-2 2 2 2 0 0 1 2 2h10a2 2 0 0 1 2-2 2 2 0 0 1-2-2H7Zm5 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>',
+    clock:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm1 9.1 3.4 2-.9 1.5L11 13V7h2v5.1Z"/></svg>',
+    range:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l2 5v6h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3v-6l2-5Zm.4 2-1 3h11.2l-1-3H7.4Z"/></svg>',
+    chart:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5h2v12h14v2H4Zm4-4 3-4 3 2 4-6 2 1.3-5.2 7.7-3.2-2.1-2.8 3.7L8 15Z"/></svg>',
+    calendar:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm11 8H6v10h12V10ZM6 8h12V6H6v2Z"/></svg>',
+    battery:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h16v10H3V7Zm18 3h2v4h-2v-4ZM6 10v4h8v-4H6Z"/></svg>',
+    distance:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Zm0 5.5A1.5 1.5 0 1 1 6 6.5a1.5 1.5 0 0 1 0 3Zm12-.5a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM8.8 18h4.4v2H8.8v-2Zm1.7-5h3v2h-3v-2Z"/></svg>',
     pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>',
-    shield: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5.2 3.4 9.7 8 11 4.6-1.3 8-5.8 8-11V5l-8-3Zm1 14h-2v-2h2v2Zm0-4h-2V7h2v5Z"/></svg>',
+    shield:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5.2 3.4 9.7 8 11 4.6-1.3 8-5.8 8-11V5l-8-3Zm1 14h-2v-2h2v2Zm0-4h-2V7h2v5Z"/></svg>',
   };
 
   return `<span class="result-icon" aria-hidden="true">${icons[name] || icons.energy}</span>`;
 }
 
-function renderCalculatorResultItem(icon, label, value, detail = "", extraClass = "") {
+function renderCalculatorResultItem(
+  icon,
+  label,
+  value,
+  detail = "",
+  extraClass = "",
+) {
   return `
     <div class="result-item ${extraClass}">
       ${calculatorIcon(icon)}
@@ -364,7 +405,11 @@ function getCategoryGroup(category) {
     return "SUV mediano / Premium";
   }
 
-  if (normalized.includes("sedan") || normalized.includes("coupe") || normalized.includes("roadster")) {
+  if (
+    normalized.includes("sedan") ||
+    normalized.includes("coupe") ||
+    normalized.includes("roadster")
+  ) {
     return "Sedán / Coupé";
   }
 
@@ -379,7 +424,8 @@ function getCategoryGroup(category) {
     return "Comercial";
   }
 
-  if (normalized.includes("mpv") || normalized.includes("familiar")) return "MPV / Familiar";
+  if (normalized.includes("mpv") || normalized.includes("familiar"))
+    return "MPV / Familiar";
 
   return category || "Otros";
 }
@@ -397,11 +443,19 @@ function getStatusInfo(model) {
     observations.includes("posible duplicacion");
 
   if (needsReview) {
-    return { key: "verify", label: "Por verificar", className: "status-verify" };
+    return {
+      key: "verify",
+      label: "Por verificar",
+      className: "status-verify",
+    };
   }
 
   if (status.includes("anunciado") || status.includes("lanzamiento")) {
-    return { key: "launch", label: "Lanzamiento / anunciado", className: "status-launch" };
+    return {
+      key: "launch",
+      label: "Lanzamiento / anunciado",
+      className: "status-launch",
+    };
   }
 
   if (
@@ -411,7 +465,11 @@ function getStatusInfo(model) {
     status.includes("catalogo") ||
     status.includes("mercado chileno")
   ) {
-    return { key: "available", label: "Disponible", className: "status-available" };
+    return {
+      key: "available",
+      label: "Disponible",
+      className: "status-available",
+    };
   }
 
   return { key: "verify", label: "Por verificar", className: "status-verify" };
@@ -438,7 +496,13 @@ function cleanPublicObservation(model) {
   const publicParts = raw
     .split(/(?<=[.!?])\s+|;\s+/)
     .map((part) => part.trim())
-    .filter((part) => part && !internalTerms.some((term) => normalizeText(part).includes(normalizeText(term))));
+    .filter(
+      (part) =>
+        part &&
+        !internalTerms.some((term) =>
+          normalizeText(part).includes(normalizeText(term)),
+        ),
+    );
 
   return publicParts.join(" ") || "Sin observaciones públicas relevantes.";
 }
@@ -454,8 +518,10 @@ function buildChip({ label, value, active, type }) {
 function populateEvGuideStats() {
   if (!evGuideStats) return;
   const models = getEvModels().filter((model) => model.includeInApp);
-  const brandCount = new Set(models.map((model) => model.brand).filter(Boolean)).size;
-  const techCount = (technology) => models.filter((model) => model.technology === technology).length;
+  const brandCount = new Set(models.map((model) => model.brand).filter(Boolean))
+    .size;
+  const techCount = (technology) =>
+    models.filter((model) => model.technology === technology).length;
   const stats = [
     { label: "modelos", value: models.length },
     { label: "marcas", value: brandCount },
@@ -471,7 +537,7 @@ function populateEvGuideStats() {
           <strong>${stat.value}</strong>
           <span>${escapeHtml(stat.label)}</span>
         </div>
-      `
+      `,
     )
     .join("");
 }
@@ -491,7 +557,7 @@ function populateEvTechnologyFilters() {
         value: option.value,
         active: evSelectedTechnology === option.value,
         type: "technology",
-      })
+      }),
     )
     .join("");
 }
@@ -499,7 +565,11 @@ function populateEvTechnologyFilters() {
 function populateEvCategoryFilters() {
   if (!evCategoryFilters) return;
   const groups = [
-    ...new Set(getEvModels().map((model) => getCategoryGroup(model.category)).filter(Boolean)),
+    ...new Set(
+      getEvModels()
+        .map((model) => getCategoryGroup(model.category))
+        .filter(Boolean),
+    ),
   ].sort((a, b) => a.localeCompare(b, "es"));
   const options = [
     { label: "Todos", value: "all" },
@@ -514,7 +584,7 @@ function populateEvCategoryFilters() {
         value: option.value,
         active: evSelectedCategory === option.value,
         type: "category",
-      })
+      }),
     )
     .join("");
 }
@@ -547,15 +617,24 @@ function getFilteredEvModels() {
       (evSelectedCategory === "featured" && model.featured) ||
       getCategoryGroup(model.category) === evSelectedCategory;
     const matchesTechnology =
-      evSelectedTechnology === "all" || model.technology === evSelectedTechnology;
-    const matchesStatus = selectedStatus === "all" || statusInfo.key === selectedStatus;
-    const matchesBrand = selectedBrand === "all" || model.brand === selectedBrand;
+      evSelectedTechnology === "all" ||
+      model.technology === evSelectedTechnology;
+    const matchesStatus =
+      selectedStatus === "all" || statusInfo.key === selectedStatus;
+    const matchesBrand =
+      selectedBrand === "all" || model.brand === selectedBrand;
     const searchableText = normalizeText(
-      `${model.brand} ${model.model} ${model.technology} ${getTechnologyLabel(model.technology)} ${model.category} ${getCategoryGroup(model.category)} ${model.commercialStatus}`
+      `${model.brand} ${model.model} ${model.technology} ${getTechnologyLabel(model.technology)} ${model.category} ${getCategoryGroup(model.category)} ${model.commercialStatus}`,
     );
     const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
 
-    return matchesCategory && matchesTechnology && matchesStatus && matchesBrand && matchesSearch;
+    return (
+      matchesCategory &&
+      matchesTechnology &&
+      matchesStatus &&
+      matchesBrand &&
+      matchesSearch
+    );
   });
 }
 
@@ -564,7 +643,9 @@ function buildEvModelCard(model) {
     ? `<a href="${escapeHtml(model.officialUrl)}" target="_blank" rel="noopener noreferrer">Sitio oficial</a>`
     : "";
   const statusInfo = getStatusInfo(model);
-  const featuredBadge = model.featured ? '<span class="ev-model-badge featured-badge">Destacado EVIA</span>' : "";
+  const featuredBadge = model.featured
+    ? '<span class="ev-model-badge featured-badge">Destacado EVIA</span>'
+    : "";
 
   return `
     <article class="ev-model-card" data-ev-card-id="${escapeHtml(model.id)}" tabindex="0" role="button" aria-label="Ver ficha de ${escapeHtml(model.brand)} ${escapeHtml(model.model)}">
@@ -755,15 +836,25 @@ if (chargeForm) {
       monthlyKm,
     } = values;
 
-    const energyNeeded = batteryCapacity * ((targetPercent - currentPercent) / 100);
-    const estimatedCost = energyNeeded * priceKwh;
-    const timeEstimate = provided.chargerPower
-      ? formatChargeTime(energyNeeded / chargerPower)
-      : null;
-    const addedRange = (energyNeeded / evConsumption) * 100;
-    const costPer100Km = evConsumption * priceKwh;
-    const monthlyEnergy = provided.monthlyKm ? (evConsumption * monthlyKm) / 100 : null;
-    const monthlyCost = provided.monthlyKm ? monthlyEnergy * priceKwh : null;
+    const {
+      energyNeeded,
+      estimatedCost,
+      chargeHours,
+      addedRange,
+      costPer100Km,
+      monthlyEnergy,
+      monthlyCost,
+    } = EviaCalculations.calculateCharge({
+      batteryCapacity,
+      currentPercent,
+      targetPercent,
+      priceKwh,
+      chargerPower: provided.chargerPower ? chargerPower : null,
+      evConsumption,
+      monthlyKm: provided.monthlyKm ? monthlyKm : null,
+    });
+    const timeEstimate =
+      chargeHours === null ? null : formatChargeTime(chargeHours);
     const advice =
       "Para el uso diario, muchos fabricantes recomiendan limitar la carga habitual alrededor del 80 %. Revisa siempre las indicaciones de tu vehículo.";
 
@@ -775,19 +866,23 @@ if (chargeForm) {
         ${renderCalculatorResultItem("money", "Costo de carga", formatClp(estimatedCost))}
         ${
           timeEstimate
-            ? renderCalculatorResultItem("clock", "Tiempo estimado", timeEstimate)
+            ? renderCalculatorResultItem(
+                "clock",
+                "Tiempo estimado",
+                timeEstimate,
+              )
             : renderCalculatorResultItem(
                 "clock",
                 "Tiempo estimado",
                 "Ingresa la potencia del cargador para estimar el tiempo.",
                 "",
-                "result-item-muted"
+                "result-item-muted",
               )
         }
         ${renderCalculatorResultItem(
           "range",
           "Autonomía agregada",
-          `${Math.round(addedRange).toLocaleString("es-CL")} km aprox.`
+          `${Math.round(addedRange).toLocaleString("es-CL")} km aprox.`,
         )}
         ${renderCalculatorResultItem("chart", "Costo por 100 km", formatClp(costPer100Km))}
         ${
@@ -797,7 +892,7 @@ if (chargeForm) {
                 "Costo mensual",
                 formatClp(monthlyCost),
                 `Energía mensual estimada: ${monthlyEnergy.toFixed(1)} kWh`,
-                "result-item-monthly"
+                "result-item-monthly",
               )
             : ""
         }
@@ -869,10 +964,14 @@ function setTripFieldError(id, message = "") {
 
 function getTripFieldError(config, parsed) {
   if (parsed.empty) return config.required ? config.requiredMessage : "";
-  if (!parsed.valid) return "Ingresa un valor numérico válido. Puedes usar coma o punto para los decimales.";
-  if (config.minExclusive !== undefined && parsed.value <= config.minExclusive) return config.minMessage;
-  if (config.min !== undefined && parsed.value < config.min) return config.minMessage;
-  if (config.max !== undefined && parsed.value > config.max) return config.maxMessage;
+  if (!parsed.valid)
+    return "Ingresa un valor numérico válido. Puedes usar coma o punto para los decimales.";
+  if (config.minExclusive !== undefined && parsed.value <= config.minExclusive)
+    return config.minMessage;
+  if (config.min !== undefined && parsed.value < config.min)
+    return config.minMessage;
+  if (config.max !== undefined && parsed.value > config.max)
+    return config.maxMessage;
   return "";
 }
 
@@ -908,7 +1007,10 @@ function setupTripFields() {
       label.appendChild(error);
     }
 
-    input.setAttribute("aria-describedby", help ? `${helpId} ${errorId}` : errorId);
+    input.setAttribute(
+      "aria-describedby",
+      help ? `${helpId} ${errorId}` : errorId,
+    );
     input.addEventListener("input", () => setTripFieldError(id));
   });
 }
@@ -960,17 +1062,25 @@ if (tripForm) {
       return;
     }
 
-    const { tripRange, tripBatteryPercent, tripDistance, tripSafetyMargin } = values;
-    const availableRange = tripRange * (tripBatteryPercent / 100);
-    const neededBattery = (tripDistance / tripRange) * 100;
-    const remainingBattery = tripBatteryPercent - neededBattery;
-    const remainingRange = tripRange * (remainingBattery / 100);
-    const safetyMarginKm = tripRange * (tripSafetyMargin / 100);
-    const recommendedStartBattery = neededBattery + tripSafetyMargin;
-    const recommendedRounded = Math.min(100, Math.ceil(recommendedStartBattery));
-    const chargeDeficit = recommendedStartBattery - tripBatteryPercent;
-    const missingMarginPoints = Math.max(0, tripSafetyMargin - Math.max(0, remainingBattery));
-    const cannotKeepMarginWithoutStop = recommendedStartBattery > 100;
+    const { tripRange, tripBatteryPercent, tripDistance, tripSafetyMargin } =
+      values;
+    const {
+      availableRange,
+      neededBattery,
+      remainingBattery,
+      remainingRange,
+      safetyMarginKm,
+      recommendedStartBattery,
+      recommendedRounded,
+      chargeDeficit,
+      missingMarginPoints,
+      cannotKeepMarginWithoutStop,
+    } = EviaCalculations.calculateTrip({
+      tripRange,
+      tripBatteryPercent,
+      tripDistance,
+      tripSafetyMargin,
+    });
 
     let statusClass = "red";
     let statusText = "No alcanza";
@@ -982,23 +1092,21 @@ if (tripForm) {
     if (remainingBattery >= tripSafetyMargin) {
       statusClass = "green";
       statusText = "Viaje seguro";
-      message =
-        `Tu carga actual permite completar el viaje conservando el margen elegido. Llegarías con ${formatPercent(
-          remainingBattery
-        )} y ${Math.max(0, Math.round(remainingRange)).toLocaleString("es-CL")} km aprox.`;
+      message = `Tu carga actual permite completar el viaje conservando el margen elegido. Llegarías con ${formatPercent(
+        remainingBattery,
+      )} y ${Math.max(0, Math.round(remainingRange)).toLocaleString("es-CL")} km aprox.`;
       evaTip =
         "Consejo de Eva: Tu carga actual permite completar el viaje conservando el margen elegido.";
     } else if (remainingBattery >= 0) {
       statusClass = "yellow";
       statusText = "Viaje justo";
-      message =
-        `Puedes completar el viaje, pero llegarías bajo el margen configurado. Te faltan aproximadamente ${formatBatteryPoints(
-          missingMarginPoints
-        )} puntos de batería para cumplir el margen elegido.`;
+      message = `Puedes completar el viaje, pero llegarías bajo el margen configurado. Te faltan aproximadamente ${formatBatteryPoints(
+        missingMarginPoints,
+      )} puntos de batería para cumplir el margen elegido.`;
       evaTip = cannotKeepMarginWithoutStop
         ? "Consejo de Eva: No es posible conservar este margen realizando el trayecto sin una parada de recarga."
         : `Consejo de Eva: Para conservar un ${formatConfiguredPercent(
-            tripSafetyMargin
+            tripSafetyMargin,
           )} al llegar, carga aproximadamente hasta el ${recommendedRounded} % o planifica una parada de recarga.`;
     }
 
@@ -1014,7 +1122,7 @@ if (tripForm) {
         tripBatteryPercent,
         tripDistance,
         tripSafetyMargin,
-      })
+      }),
     );
 
     tripResult.classList.remove("hidden", "green", "yellow", "red");
@@ -1026,21 +1134,23 @@ if (tripForm) {
         ${renderCalculatorResultItem(
           "battery",
           "Autonomía disponible",
-          `${Math.round(availableRange).toLocaleString("es-CL")} km aprox.`
+          `${Math.round(availableRange).toLocaleString("es-CL")} km aprox.`,
         )}
         ${renderCalculatorResultItem(
           "distance",
           "Distancia del viaje",
-          `${Math.round(tripDistance).toLocaleString("es-CL")} km`
+          `${Math.round(tripDistance).toLocaleString("es-CL")} km`,
         )}
         ${renderCalculatorResultItem("energy", "Batería necesaria", formatPercent(neededBattery))}
         ${renderCalculatorResultItem(
           "pin",
           "Batería al llegar",
-          remainingBattery >= 0 ? formatPercent(remainingBattery) : "No alcanza",
+          remainingBattery >= 0
+            ? formatPercent(remainingBattery)
+            : "No alcanza",
           remainingBattery < 0
             ? `Déficit del viaje: ${formatBatteryPoints(Math.abs(remainingBattery))} puntos de batería.`
-            : ""
+            : "",
         )}
         ${renderCalculatorResultItem(
           "range",
@@ -1048,21 +1158,23 @@ if (tripForm) {
           remainingBattery >= 0
             ? `${Math.round(Math.max(0, remainingRange)).toLocaleString("es-CL")} km aprox.`
             : "0 km",
-          remainingBattery < 0 ? "No alcanza para completar el viaje." : ""
+          remainingBattery < 0 ? "No alcanza para completar el viaje." : "",
         )}
         ${renderCalculatorResultItem(
           "shield",
           "Margen configurado",
           formatConfiguredPercent(tripSafetyMargin),
-          `Meta de reserva: ${Math.round(safetyMarginKm).toLocaleString("es-CL")} km aprox.`
+          `Meta de reserva: ${Math.round(safetyMarginKm).toLocaleString("es-CL")} km aprox.`,
         )}
         ${renderCalculatorResultItem(
           "chart",
           "Carga recomendada al salir",
-          cannotKeepMarginWithoutStop ? "Requiere parada" : `${recommendedRounded} % aprox.`,
+          cannotKeepMarginWithoutStop
+            ? "Requiere parada"
+            : `${recommendedRounded} % aprox.`,
           cannotKeepMarginWithoutStop
             ? "No es posible conservar este margen sin recargar en ruta."
-            : `Batería mínima recomendada: ${formatPercent(recommendedStartBattery)}.`
+            : `Batería mínima recomendada: ${formatPercent(recommendedStartBattery)}.`,
         )}
         ${
           chargeDeficit > 0
@@ -1071,7 +1183,7 @@ if (tripForm) {
                 "Déficit de carga",
                 `${formatBatteryPoints(chargeDeficit)} puntos de batería`,
                 "Diferencia entre tu carga actual y la batería mínima recomendada para salir.",
-                "result-item-deficit"
+                "result-item-deficit",
               )
             : ""
         }
@@ -1087,7 +1199,9 @@ if (tripForm) {
 }
 
 function getUsedChecklistInputs() {
-  return Array.from(document.querySelectorAll("#usedChecklistForm input[type='checkbox']"));
+  return Array.from(
+    document.querySelectorAll("#usedChecklistForm input[type='checkbox']"),
+  );
 }
 
 function getUsedChecklistEvaluation(score) {
@@ -1127,7 +1241,9 @@ function updateUsedChecklist() {
   const evaluation = getUsedChecklistEvaluation(checkedCount);
 
   inputs.forEach((input) => {
-    input.closest(".checklist-item")?.classList.toggle("checked", input.checked);
+    input
+      .closest(".checklist-item")
+      ?.classList.toggle("checked", input.checked);
   });
 
   usedChecklistResult.classList.remove("risk-low", "risk-medium", "risk-high");
@@ -1155,7 +1271,8 @@ function loadUsedChecklist() {
   if (!usedChecklistForm) return;
 
   try {
-    const saved = JSON.parse(localStorage.getItem(usedChecklistStorageKey)) || [];
+    const saved =
+      JSON.parse(localStorage.getItem(usedChecklistStorageKey)) || [];
     const savedSet = new Set(saved);
 
     getUsedChecklistInputs().forEach((input) => {
@@ -1190,7 +1307,9 @@ if (usedChecklistForm) {
 }
 
 function getFirstStepsInputs() {
-  return Array.from(document.querySelectorAll("#firstStepsForm input[type='checkbox']"));
+  return Array.from(
+    document.querySelectorAll("#firstStepsForm input[type='checkbox']"),
+  );
 }
 
 function getFirstStepsEvaluation(score) {
@@ -1230,7 +1349,9 @@ function updateFirstStepsGuide() {
   const evaluation = getFirstStepsEvaluation(completedCount);
 
   inputs.forEach((input) => {
-    input.closest(".first-step-item")?.classList.toggle("checked", input.checked);
+    input
+      .closest(".first-step-item")
+      ?.classList.toggle("checked", input.checked);
   });
 
   firstStepsResult.classList.remove("risk-low", "risk-medium", "risk-high");
@@ -1292,7 +1413,9 @@ if (firstStepsForm) {
 }
 
 function getPublishChecklistInputs() {
-  return Array.from(document.querySelectorAll("#publishChecklistForm input[type='checkbox']"));
+  return Array.from(
+    document.querySelectorAll("#publishChecklistForm input[type='checkbox']"),
+  );
 }
 
 function getPublishChecklistEvaluation(score) {
@@ -1332,10 +1455,16 @@ function updatePublishChecklist() {
   const evaluation = getPublishChecklistEvaluation(completedCount);
 
   inputs.forEach((input) => {
-    input.closest(".publish-checklist-item")?.classList.toggle("checked", input.checked);
+    input
+      .closest(".publish-checklist-item")
+      ?.classList.toggle("checked", input.checked);
   });
 
-  publishChecklistResult.classList.remove("risk-low", "risk-medium", "risk-high");
+  publishChecklistResult.classList.remove(
+    "risk-low",
+    "risk-medium",
+    "risk-high",
+  );
   publishChecklistResult.classList.add(evaluation.riskClass);
   publishChecklistResult.innerHTML = `
     <div class="checklist-score">Has completado ${completedCount} de ${total} puntos</div>
@@ -1359,7 +1488,8 @@ function loadPublishChecklist() {
   if (!publishChecklistForm) return;
 
   try {
-    const saved = JSON.parse(localStorage.getItem(publishChecklistStorageKey)) || [];
+    const saved =
+      JSON.parse(localStorage.getItem(publishChecklistStorageKey)) || [];
     const savedSet = new Set(saved);
 
     getPublishChecklistInputs().forEach((input) => {
@@ -1418,7 +1548,9 @@ async function copyTextToClipboard(text) {
 copyPublishDescriptionBtn?.addEventListener("click", async () => {
   if (!publishDescriptionText || !publishCopyStatus) return;
 
-  const copied = await copyTextToClipboard(publishDescriptionText.innerText.trim());
+  const copied = await copyTextToClipboard(
+    publishDescriptionText.innerText.trim(),
+  );
   publishCopyStatus.textContent = copied
     ? "Descripción copiada."
     : "No se pudo copiar. Intenta nuevamente.";
@@ -1444,7 +1576,10 @@ function getMyEviaData() {
 
 function readMyEviaForm() {
   return Object.fromEntries(
-    Object.entries(myEviaFields).map(([key, id]) => [key, document.getElementById(id)?.value.trim() || ""])
+    Object.entries(myEviaFields).map(([key, id]) => [
+      key,
+      document.getElementById(id)?.value.trim() || "",
+    ]),
   );
 }
 
@@ -1461,18 +1596,13 @@ function formatSavedValue(value, suffix = "") {
   return value ? `${value}${suffix}` : "No informado";
 }
 
-function escapeHtml(value) {
-  const element = document.createElement("div");
-  element.textContent = value || "";
-  return element.innerHTML;
-}
-
 function updateMyEviaSummary(data = getMyEviaData()) {
   if (!myEviaSummary) return;
 
   const hasSavedData = data && Object.values(data).some(Boolean);
   if (!hasSavedData) {
-    myEviaSummary.innerHTML = "<h3>Datos guardados</h3><p>Aún no has guardado datos de tu vehículo.</p>";
+    myEviaSummary.innerHTML =
+      "<h3>Datos guardados</h3><p>Aún no has guardado datos de tu vehículo.</p>";
     return;
   }
 
@@ -1530,7 +1660,9 @@ if (myEviaForm) {
 }
 
 navButtons.forEach((button) => {
-  button.addEventListener("click", () => prefillToolFromMyEvia(button.dataset.target));
+  button.addEventListener("click", () =>
+    prefillToolFromMyEvia(button.dataset.target),
+  );
 });
 
 window.addEventListener("hashchange", () => {
@@ -1556,7 +1688,7 @@ installBtn?.addEventListener("click", async () => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("service-worker.js?v=28")
+      .register("service-worker.js?v=29")
       .catch((error) => console.warn("Service worker no registrado:", error));
   });
 }

@@ -1,38 +1,42 @@
-const CACHE_NAME = 'evia-cache-v28';
+const CACHE_NAME = "evia-cache-v29";
 
-const APP_SHELL = [
-  './',
-  './index.html',
-  './style.css',
-  './ev-models.js',
-  './app.js',
-  './manifest.json',
+const REQUIRED_APP_SHELL = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./calculations.js",
+  "./ev-models.js",
+  "./app.js",
+  "./manifest.json",
 ];
 
 const ASSETS = [
-  './assets/logo.png',
-  './assets/eva.png',
-  './assets/icon-192.png',
-  './assets/icon-512.png',
+  "./assets/logo.png",
+  "./assets/eva.webp",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png",
+  "./assets/icon-maskable-512.png",
 ];
 
 function isAppShellRequest(request) {
-  if (request.mode === 'navigate') return true;
+  if (request.mode === "navigate") return true;
 
   const url = new URL(request.url);
   return (
-    url.pathname.endsWith('/') ||
-    url.pathname.endsWith('/index.html') ||
-    url.pathname.endsWith('/ev-models.js') ||
-    url.pathname.endsWith('/app.js') ||
-    url.pathname.endsWith('/style.css') ||
-    url.pathname.endsWith('/manifest.json')
+    url.pathname.endsWith("/") ||
+    url.pathname.endsWith("/index.html") ||
+    url.pathname.endsWith("/ev-models.js") ||
+    url.pathname.endsWith("/app.js") ||
+    url.pathname.endsWith("/style.css") ||
+    url.pathname.endsWith("/manifest.json")
   );
 }
 
 function isAssetRequest(request) {
   const url = new URL(request.url);
-  return ASSETS.some((asset) => url.pathname.endsWith(asset.replace('./', '/')));
+  return ASSETS.some((asset) =>
+    url.pathname.endsWith(asset.replace("./", "/")),
+  );
 }
 
 async function networkFirst(request) {
@@ -69,16 +73,17 @@ async function cacheFirst(request) {
   return response;
 }
 
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll([...APP_SHELL, ...ASSETS]))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await cache.addAll(REQUIRED_APP_SHELL);
+      await Promise.allSettled(ASSETS.map((asset) => cache.add(asset)));
+    }),
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
@@ -86,15 +91,15 @@ self.addEventListener('activate', (event) => {
         Promise.all(
           keys
             .filter((key) => key !== CACHE_NAME)
-            .map((key) => caches.delete(key))
-        )
-      )
+            .map((key) => caches.delete(key)),
+        ),
+      ),
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
 
   if (isAppShellRequest(event.request)) {
     event.respondWith(networkFirst(event.request));
