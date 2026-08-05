@@ -1,4 +1,4 @@
-const CACHE_NAME = "evia-cache-v29";
+const CACHE_NAME = "evia-cache-v30";
 
 const REQUIRED_APP_SHELL = [
   "./",
@@ -25,6 +25,7 @@ function isAppShellRequest(request) {
   return (
     url.pathname.endsWith("/") ||
     url.pathname.endsWith("/index.html") ||
+    url.pathname.endsWith("/calculations.js") ||
     url.pathname.endsWith("/ev-models.js") ||
     url.pathname.endsWith("/app.js") ||
     url.pathname.endsWith("/style.css") ||

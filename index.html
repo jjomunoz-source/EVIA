@@ -34,7 +34,7 @@
     <link rel="canonical" href="https://www.eviachile.cl/" />
     <title>EVIA | Electromovilidad simple para Chile</title>
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=29" />
+    <link rel="stylesheet" href="style.css?v=30" />
     <link rel="icon" href="assets/icon-192.png" />
     <link rel="apple-touch-icon" href="assets/icon-192.png" />
   </head>
@@ -1035,9 +1035,62 @@
             >Encuentra cargadores
           </h2>
           <p class="lead">
-            Consulta redes de carga, mapas y plataformas para encontrar puntos
-            disponibles en Chile.
+            Accede a fuentes oficiales, redes de carga y mapas externos para
+            buscar puntos de carga en Chile.
           </p>
+          <div class="charger-disclaimer" id="externalServiceNotice">
+            <strong>EVIA funciona como directorio.</strong>
+            <span
+              >No muestra disponibilidad en tiempo real ni solicita tu
+              ubicación. Cada enlace abre un servicio externo con sus propios
+              datos y políticas.</span
+            >
+          </div>
+          <div class="charger-quick-actions" aria-label="Acciones rápidas">
+            <a
+              class="primary-btn charger-nearby-button"
+              href="https://www.google.com/maps/search/?api=1&amp;query=cargadores+electricos+cerca+de+mi"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-describedby="externalServiceNotice"
+              >Buscar cerca de mí ↗</a
+            ><button
+              type="button"
+              class="secondary-btn"
+              data-target="tripPlanner"
+            >
+              Planificar mi viaje
+            </button>
+          </div>
+          <section
+            class="charger-platform-section charger-featured-section"
+            aria-labelledby="officialMapTitle"
+          >
+            <h3 id="officialMapTitle" class="charger-section-title">
+              Mapa oficial recomendado
+            </h3>
+            <a
+              class="charger-platform-card charger-featured-card"
+              href="https://energia.gob.cl/electromovilidad/ecocarga"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir EcoCarga del Ministerio de Energía en una nueva pestaña"
+              aria-describedby="externalServiceNotice chargerVerifiedDate"
+              ><span class="charger-card-icon" aria-hidden="true"
+                ><svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+                  /></svg></span
+              ><span class="charger-card-copy"
+                ><span class="charger-source-badge">Fuente oficial</span
+                ><strong>EcoCarga · Ministerio de Energía</strong
+                ><small
+                  >Consulta ubicación, potencia, conectores, compatibilidad,
+                  precio y estado informado por la plataforma oficial.</small
+                ><em>Abrir mapa oficial</em></span
+              ><span class="external-arrow" aria-hidden="true">↗</span></a
+            >
+          </section>
           <section
             class="charger-platform-section"
             aria-labelledby="chargingNetworksTitle"
@@ -1048,53 +1101,43 @@
             <div class="charger-card-grid">
               <a
                 class="charger-platform-card"
-                href="https://energia.gob.cl/electromovilidad/ecocarga"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir EcoCarga en una nueva pestaña"
-                ><span class="charger-card-icon" aria-hidden="true"
-                  ><svg viewBox="0 0 24 24">
-                    <path
-                      d="M8 2h2v6h4V2h2v7a4 4 0 0 1-3 3.87V22h-2v-9.13A4 4 0 0 1 8 9V2Zm2 8a2 2 0 0 0 4 0h-4Z"
-                    /></svg></span
-                ><span class="charger-card-copy"
-                  ><strong>EcoCarga</strong
-                  ><small
-                    >Consulta su red y los puntos de carga disponibles.</small
-                  ><em>Abrir plataforma</em></span
-                ><span class="external-arrow" aria-hidden="true">↗</span></a
-              ><a
-                class="charger-platform-card"
-                href="https://copecvoltex.cl/"
+                href="https://copecvoltex.cl/pages/red-de-carga-publica"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir Copec Voltex en una nueva pestaña"
+                aria-describedby="externalServiceNotice chargerVerifiedDate"
                 ><span class="charger-card-icon" aria-hidden="true"
                   ><svg viewBox="0 0 24 24">
                     <path
                       d="M8 2h2v6h4V2h2v7a4 4 0 0 1-3 3.87V22h-2v-9.13A4 4 0 0 1 8 9V2Zm2 8a2 2 0 0 0 4 0h-4Z"
                     /></svg></span
                 ><span class="charger-card-copy"
+                  ><span class="charger-source-badge network">Red de carga</span
                   ><strong>Copec Voltex</strong
                   ><small
-                    >Encuentra estaciones y servicios de carga de la red.</small
-                  ><em>Abrir plataforma</em></span
+                    >Revisa sus puntos de carga, planificación y condiciones de
+                    uso.</small
+                  ><em>Abrir red oficial</em></span
                 ><span class="external-arrow" aria-hidden="true">↗</span></a
               ><a
                 class="charger-platform-card"
-                href="https://www.enelx.com/cl/es"
+                href="https://www.enelx.com/cl/es/mapa-puntos-de-carga"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir Enel X en una nueva pestaña"
+                aria-describedby="externalServiceNotice chargerVerifiedDate"
                 ><span class="charger-card-icon" aria-hidden="true"
                   ><svg viewBox="0 0 24 24">
                     <path
                       d="M8 2h2v6h4V2h2v7a4 4 0 0 1-3 3.87V22h-2v-9.13A4 4 0 0 1 8 9V2Zm2 8a2 2 0 0 0 4 0h-4Z"
                     /></svg></span
                 ><span class="charger-card-copy"
+                  ><span class="charger-source-badge network">Red de carga</span
                   ><strong>Enel X</strong
-                  ><small>Accede a información sobre sus puntos de carga.</small
-                  ><em>Abrir plataforma</em></span
+                  ><small
+                    >Consulta su mapa, potencia, conectores y estado informado
+                    de los puntos.</small
+                  ><em>Abrir mapa de la red</em></span
                 ><span class="external-arrow" aria-hidden="true">↗</span></a
               >
             </div>
@@ -1109,21 +1152,25 @@
             <div class="charger-card-grid">
               <a
                 class="charger-platform-card"
-                href="https://www.google.com/maps/search/cargadores+electricos+cerca+de+mi"
+                href="https://www.google.com/maps/search/?api=1&amp;query=cargadores+electricos+cerca+de+mi"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir Google Maps en una nueva pestaña"
+                aria-describedby="externalServiceNotice chargerVerifiedDate"
                 ><span class="charger-card-icon" aria-hidden="true"
                   ><svg viewBox="0 0 24 24">
                     <path
                       d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
                     /></svg></span
                 ><span class="charger-card-copy"
-                  ><strong>Google Maps</strong
+                  ><span class="charger-source-badge community"
+                    >Mapa externo</span
+                  >
+                  <strong>Google Maps</strong
                   ><small
                     >Busca cargadores y revisa rutas, horarios y
                     ubicaciones.</small
-                  ><em>Abrir plataforma</em></span
+                  ><em>Buscar en Google Maps</em></span
                 ><span class="external-arrow" aria-hidden="true">↗</span></a
               ><a
                 class="charger-platform-card"
@@ -1131,35 +1178,43 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir PlugShare en una nueva pestaña"
+                aria-describedby="externalServiceNotice chargerVerifiedDate"
                 ><span class="charger-card-icon" aria-hidden="true"
                   ><svg viewBox="0 0 24 24">
                     <path
                       d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
                     /></svg></span
                 ><span class="charger-card-copy"
-                  ><strong>PlugShare</strong
+                  ><span class="charger-source-badge community"
+                    >Comunidad</span
+                  >
+                  <strong>PlugShare</strong
                   ><small
                     >Explora ubicaciones, conectores y reportes de la
                     comunidad.</small
-                  ><em>Abrir plataforma</em></span
+                  ><em>Abrir mapa comunitario</em></span
                 ><span class="external-arrow" aria-hidden="true">↗</span></a
               ><a
                 class="charger-platform-card"
-                href="https://www.electromaps.com/"
+                href="https://map.electromaps.com/es/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir Electromaps en una nueva pestaña"
+                aria-describedby="externalServiceNotice chargerVerifiedDate"
                 ><span class="charger-card-icon" aria-hidden="true"
                   ><svg viewBox="0 0 24 24">
                     <path
                       d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
                     /></svg></span
                 ><span class="charger-card-copy"
-                  ><strong>Electromaps</strong
+                  ><span class="charger-source-badge community"
+                    >Comunidad</span
+                  >
+                  <strong>Electromaps</strong
                   ><small
                     >Consulta puntos de carga y servicios para vehículos
                     eléctricos.</small
-                  ><em>Abrir plataforma</em></span
+                  ><em>Abrir mapa comunitario</em></span
                 ><span class="external-arrow" aria-hidden="true">↗</span></a
               >
             </div>
@@ -1172,10 +1227,15 @@
                 /></svg
             ></span>
             <p>
-              Antes de viajar, confirma en la plataforma seleccionada la
-              disponibilidad, potencia, precio y medio de pago del cargador.
+              Antes de viajar, abre la app y planifica tu viaje; además ten
+              presente: disponibilidad, potencia, precio, compatibilidad del
+              conector y medio de pago.
             </p>
           </div>
+          <p class="charger-verification" id="chargerVerifiedDate">
+            Enlaces verificados el 5 de agosto de 2026. Requieren conexión a
+            internet.
+          </p>
         </section>
         <section id="homeCharging" class="screen">
           <button type="button" class="back-btn" data-target="home">
@@ -1575,9 +1635,15 @@
             <h3>6. Enlaces externos</h3>
             <p>
               EVIA puede incluir enlaces a servicios externos como Google Maps,
-              PlugShare, Instagram, TikTok o YouTube. Al abrir esos enlaces,
-              estarás usando plataformas externas con sus propias políticas de
-              privacidad.
+              EcoCarga, Copec Voltex, Enel X, PlugShare, Electromaps, Instagram,
+              TikTok o YouTube. Al abrir esos enlaces, estarás usando
+              plataformas externas con sus propias políticas de privacidad.
+            </p>
+            <p>
+              El módulo Cargadores no solicita, almacena ni transmite tu
+              ubicación. Si decides usar la opción “Buscar cerca de mí”, el
+              servicio externo que abras puede solicitar acceso a tu ubicación
+              según sus propios permisos y políticas.
             </p>
           </div>
           <div class="content-card privacy-card">
@@ -1619,10 +1685,7 @@
           </div>
           <div class="privacy-update">
             <strong>Última actualización</strong
-            ><span
-              >Esta política corresponde a la versión inicial de EVIA y podrá
-              actualizarse a medida que se incorporen nuevas funciones.</span
-            >
+            ><span>5 de agosto de 2026.</span>
           </div>
         </section>
       </main>
@@ -1636,8 +1699,8 @@
         </button>
       </nav>
     </div>
-    <script src="calculations.js?v=29"></script>
-    <script src="ev-models.js?v=29"></script>
-    <script src="app.js?v=29"></script>
+    <script src="calculations.js?v=30"></script>
+    <script src="ev-models.js?v=30"></script>
+    <script src="app.js?v=30"></script>
   </body>
 </html>
