@@ -52,3 +52,11 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
+
+      - name: Publicar APK Debug
+        uses: actions/upload-artifact@v7
+        with:
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
+          archive: false
