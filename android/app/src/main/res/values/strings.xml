@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EVIA</string>
+    <string name="title_activity_main">EVIA</string>
+    <string name="package_name">cl.eviachile.app</string>
+    <string name="custom_url_scheme">cl.eviachile.app</string>
+</resources>

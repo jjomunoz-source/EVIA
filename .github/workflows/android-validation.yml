@@ -1,0 +1,62 @@
+name: Validar Android
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Compilar Android
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Preparar estructura nativa
+        run: npm run build:native
+
+      - name: Sincronizar con Android
+        run: npx cap sync android
+
+      - name: Comprobar sintaxis
+        run: npm run check
+
+      - name: Ejecutar pruebas
+        run: npm test
+
+      - name: Configurar Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Compilar APK Debug
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Publicar APK Debug
+        uses: actions/upload-artifact@v7
+        with:
+          name: evia-android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
