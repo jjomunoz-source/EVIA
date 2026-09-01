@@ -47,11 +47,11 @@ jobs:
           java-version: 21
           cache: gradle
 
-      - name: Compilar APK Debug
+      - name: Compilar APK Debug y validar AAB Release
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug bundleRelease --no-daemon
 
       - name: Publicar APK Debug
         uses: actions/upload-artifact@v7
