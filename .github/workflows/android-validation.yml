@@ -51,7 +51,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug assembleDebugAndroidTest bundleRelease --no-daemon
+          ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:bundleRelease --no-daemon
 
       - name: Publicar APK Debug
         uses: actions/upload-artifact@v7
