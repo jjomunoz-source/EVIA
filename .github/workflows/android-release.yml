@@ -86,7 +86,8 @@ jobs:
         run: |
           AAB_PATH="android/app/build/outputs/bundle/release/app-release.aab"
           test -s "${AAB_PATH}"
-          jarsigner -verify -certs "${AAB_PATH}"
+          jarsigner -verify -strict -certs "${AAB_PATH}"
+          sha256sum "${AAB_PATH}"
 
       - name: Publicar AAB Release
         uses: actions/upload-artifact@v7
