@@ -84,9 +84,13 @@ jobs:
 
       - name: Verificar AAB y firma
         run: |
+          set -o pipefail
           AAB_PATH="android/app/build/outputs/bundle/release/app-release.aab"
+          VERIFY_LOG="${RUNNER_TEMP}/jarsigner-verify.txt"
           test -s "${AAB_PATH}"
-          jarsigner -verify -strict -certs "${AAB_PATH}"
+          jarsigner -verify -verbose -certs "${AAB_PATH}" 2>&1 | tee "${VERIFY_LOG}"
+          grep -Fxq "jar verified." "${VERIFY_LOG}"
+          grep -Fq "CN=EVIA Upload" "${VERIFY_LOG}"
           sha256sum "${AAB_PATH}"
 
       - name: Publicar AAB Release
